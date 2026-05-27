@@ -9,14 +9,13 @@
 <meta name="theme-color" content="#0a0a0a">
 <title>Lucas.Fit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0a0a0a;--bg2:#111;--bg3:#181818;--bg4:#222;
   --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
   --text:#f0f0f0;--text2:#888;--text3:#444;
-  --accent:#c8f542;--accent2:#a8d932;
-  --red:#ff4444;--orange:#ff8c00;--green:#22cc66;--blue:#4488ff;
+  --accent:#c8f542;--red:#ff4444;--orange:#ff8c00;--green:#22cc66;
   --fh:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
   --r:14px;--r2:10px;--nav:64px;
 }
@@ -24,25 +23,33 @@
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--fb);overscroll-behavior:none}
 body{display:flex;flex-direction:column}
 
+/* LOADING */
+#loading-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.logo-big{font-family:var(--fh);font-size:42px;font-weight:800;letter-spacing:-1px}
+.logo-big span{color:var(--accent)}
+.spinner{width:28px;height:28px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-txt{font-size:12px;color:var(--text3)}
+
 /* LOGIN */
-#login-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;gap:0}
-.login-logo{font-family:var(--fh);font-size:42px;font-weight:800;letter-spacing:-1px;margin-bottom:8px}
+#login-screen{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
+.login-logo{font-family:var(--fh);font-size:40px;font-weight:800;letter-spacing:-1px;margin-bottom:6px}
 .login-logo span{color:var(--accent)}
-.login-sub{font-size:13px;color:var(--text2);margin-bottom:40px}
+.login-sub{font-size:13px;color:var(--text2);margin-bottom:32px}
+.sync-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(200,245,66,0.08);border:0.5px solid rgba(200,245,66,0.2);border-radius:100px;padding:5px 14px;font-size:11px;color:var(--accent);margin-bottom:28px}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .login-card{width:100%;max-width:360px;background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--r);padding:24px}
 .login-card h2{font-family:var(--fh);font-size:18px;font-weight:700;margin-bottom:20px}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px}
 .field input{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--r2);color:var(--text);font-family:var(--fb);font-size:14px;padding:13px 14px;outline:none;transition:border-color .2s}
 .field input:focus{border-color:var(--accent)}
-.btn-login{width:100%;background:var(--accent);color:#000;font-family:var(--fh);font-size:14px;font-weight:700;padding:15px;border-radius:var(--r2);border:none;cursor:pointer;margin-top:6px;letter-spacing:.3px}
+.btn-login{width:100%;background:var(--accent);color:#000;font-family:var(--fh);font-size:14px;font-weight:700;padding:15px;border-radius:var(--r2);border:none;cursor:pointer;margin-top:4px;letter-spacing:.3px;transition:opacity .2s}
+.btn-login:disabled{opacity:.5}
 .btn-switch{width:100%;background:none;border:none;color:var(--text2);font-size:13px;margin-top:14px;cursor:pointer;font-family:var(--fb)}
 .btn-switch span{color:var(--accent)}
-.login-err{font-size:12px;color:var(--red);margin-top:8px;text-align:center;min-height:16px}
-.login-info{font-size:11px;color:var(--text3);margin-top:12px;text-align:center;line-height:1.6}
-.sync-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(200,245,66,0.08);border:0.5px solid rgba(200,245,66,0.2);border-radius:100px;padding:4px 12px;font-size:11px;color:var(--accent);margin-bottom:24px}
-.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.login-err{font-size:12px;color:var(--red);margin-top:10px;text-align:center;min-height:16px;line-height:1.4}
 
 /* APP */
 #app{flex:1;display:none;flex-direction:column;overflow:hidden}
@@ -58,13 +65,13 @@ body{display:flex;flex-direction:column}
 .nav-label{font-size:10px;letter-spacing:.5px;font-weight:500}
 
 /* TOP BAR */
-.top-bar{display:flex;align-items:center;justify-content:space-between;padding:52px 0 8px}
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:52px 0 10px}
 .top-bar h1{font-family:var(--fh);font-size:26px;font-weight:800;letter-spacing:-.5px}
 .top-bar h1 span{color:var(--accent)}
 .user-btn{background:var(--bg3);border:0.5px solid var(--border2);border-radius:20px;padding:6px 12px;font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--fb);display:flex;align-items:center;gap:6px}
-.sync-indicator{width:6px;height:6px;border-radius:50%;background:var(--green)}
-.sync-indicator.syncing{background:var(--orange);animation:pulse 1s infinite}
-.sync-indicator.err{background:var(--red)}
+.sync-ind{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+.sync-ind.saving{background:var(--orange);animation:pulse 1s infinite}
+.sync-ind.err{background:var(--red)}
 
 /* CARDS */
 .card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
@@ -84,21 +91,21 @@ body{display:flex;flex-direction:column}
 .ci-emoji{font-size:22px}
 .ci-name{font-size:14px;font-weight:500}
 .ci-st{font-size:11px;color:var(--text3);margin-top:2px}
-.chk-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border2);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s;flex-shrink:0}
-.chk-btn.done{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
+.chk-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border2);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;transition:all .2s;flex-shrink:0;color:transparent}
+.chk-btn.done{background:var(--accent);border-color:var(--accent);color:#000}
 
 /* STREAK */
 .streak-box{display:flex;align-items:center;gap:16px}
 .streak-num{font-family:var(--fh);font-size:48px;font-weight:800;color:var(--accent);line-height:1}
 
 /* TREINO */
-.treino-card{background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--r2);padding:14px;margin-bottom:8px;cursor:pointer;transition:border-color .2s;display:flex;align-items:center;justify-content:space-between}
+.treino-card{background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--r2);padding:14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color .15s}
 .treino-card:active{border-color:var(--accent)}
 .tcard-tag{font-family:var(--fh);font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1px}
 .tcard-name{font-size:14px;font-weight:500;margin-top:2px}
 .tcard-meta{font-size:12px;color:var(--text2);margin-top:2px}
-.t-progress{font-size:11px;color:var(--text3);margin-top:4px}
-.t-progress span{color:var(--accent)}
+.tcard-prog{font-size:11px;color:var(--text3);margin-top:4px}
+.tcard-prog span{color:var(--accent)}
 
 /* MODAL */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:200;display:none;align-items:flex-end}
@@ -107,7 +114,7 @@ body{display:flex;flex-direction:column}
 .modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 14px}
 .modal-head{font-family:var(--fh);font-size:18px;font-weight:700;padding:0 20px 14px;border-bottom:0.5px solid var(--border)}
 .ex-item{display:flex;align-items:flex-start;gap:12px;padding:14px 20px;border-bottom:0.5px solid var(--border)}
-.ex-chk{width:26px;height:26px;border-radius:7px;border:1.5px solid var(--border2);background:none;cursor:pointer;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;font-weight:700}
+.ex-chk{width:26px;height:26px;border-radius:7px;border:1.5px solid var(--border2);background:none;cursor:pointer;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;transition:all .2s;color:transparent}
 .ex-chk.done{background:var(--accent);border-color:var(--accent);color:#000}
 .ex-inf{flex:1}
 .ex-nm{font-size:14px;font-weight:500}
@@ -119,8 +126,8 @@ body{display:flex;flex-direction:column}
 .modal-close{width:calc(100% - 40px);margin:16px 20px 0;background:var(--bg3);border:0.5px solid var(--border2);color:var(--text);font-family:var(--fb);font-size:14px;padding:14px;border-radius:var(--r2);cursor:pointer}
 
 /* DIETA */
-.diet-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 0 6px;margin-bottom:4px}
-.dnav-btn{background:var(--bg3);border:0.5px solid var(--border);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:20px;font-family:var(--fb)}
+.diet-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 0 6px;margin-bottom:4px}
+.dnav-btn{background:var(--bg3);border:0.5px solid var(--border);border-radius:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:22px;font-family:var(--fb)}
 .dnav-lbl{font-family:var(--fh);font-size:14px;font-weight:700}
 .diet-score-num{font-family:var(--fh);font-size:50px;font-weight:800;line-height:1}
 .diet-score-lbl{font-size:12px;color:var(--text2);margin-top:4px}
@@ -133,7 +140,7 @@ body{display:flex;flex-direction:column}
 .wdot.miss{background:rgba(255,68,68,.4)}
 .ref-card{background:var(--bg3);border-radius:var(--r2);overflow:hidden;margin-bottom:8px;border:0.5px solid var(--border);transition:border-color .2s}
 .ref-card.ok{border-color:rgba(34,204,102,.35)}
-.ref-card.miss{border-color:rgba(255,68,68,.2)}
+.ref-card.miss{border-color:rgba(255,68,68,.25)}
 .ref-head{display:flex;align-items:center;justify-content:space-between;padding:14px;cursor:pointer}
 .ref-lft{display:flex;align-items:center;gap:10px}
 .ref-time{font-size:11px;font-weight:700;color:var(--text3);font-family:var(--fh);letter-spacing:.5px;min-width:36px}
@@ -150,87 +157,87 @@ body{display:flex;flex-direction:column}
 .ctdown-num{font-family:var(--fh);font-size:68px;font-weight:800;color:var(--accent);line-height:1;text-align:center}
 .ctdown-sub{font-size:13px;color:var(--text2);text-align:center;margin-top:6px}
 .shape-tabs{display:flex;gap:6px;margin-bottom:14px}
-.stab{flex:1;text-align:center;padding:9px;border-radius:8px;font-size:12px;font-weight:600;font-family:var(--fh);cursor:pointer;border:0.5px solid var(--border);color:var(--text3);background:none;letter-spacing:.3px}
+.stab{flex:1;text-align:center;padding:9px;border-radius:8px;font-size:11px;font-weight:700;font-family:var(--fh);cursor:pointer;border:0.5px solid var(--border);color:var(--text3);background:none;letter-spacing:.3px}
 .stab.active{background:var(--accent);color:#000;border-color:var(--accent)}
 
 /* FORM */
 .fg{margin-bottom:12px}
 .fg label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px}
-.fg input,.fg textarea,.fg select{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--r2);color:var(--text);font-family:var(--fb);font-size:14px;padding:12px 14px;outline:none;transition:border-color .2s}
+.fg input,.fg textarea{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--r2);color:var(--text);font-family:var(--fb);font-size:14px;padding:12px 14px;outline:none;transition:border-color .2s}
 .fg input:focus,.fg textarea:focus{border-color:var(--accent)}
 .fg textarea{resize:none;height:78px}
 .btn-p{width:100%;background:var(--accent);color:#000;font-family:var(--fh);font-size:14px;font-weight:700;padding:15px;border-radius:var(--r2);border:none;cursor:pointer;letter-spacing:.3px}
-.btn-s{width:100%;background:none;border:0.5px solid var(--border2);color:var(--text);font-family:var(--fb);font-size:14px;padding:13px;border-radius:var(--r2);cursor:pointer;margin-top:8px}
+.btn-s{width:100%;background:none;border:0.5px solid var(--border2);color:var(--text2);font-family:var(--fb);font-size:14px;padding:13px;border-radius:var(--r2);cursor:pointer;margin-top:8px}
 
-/* HIST PESO */
-.wp-entry{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:0.5px solid var(--border)}
+/* HIST */
+.wp-entry{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 0;border-bottom:0.5px solid var(--border)}
 .wp-entry:last-child{border-bottom:none}
 .wp-date{font-size:12px;color:var(--text2)}
-.wp-nota{font-size:11px;color:var(--text3);margin-top:2px}
-.wp-val{font-family:var(--fh);font-size:16px;font-weight:700}
+.wp-nota{font-size:11px;color:var(--text3);margin-top:2px;max-width:200px}
+.wp-val{font-family:var(--fh);font-size:16px;font-weight:700;text-align:right}
 .wp-diff{font-size:12px;margin-top:2px;text-align:right}
+.del-btn{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:0 0 0 8px}
 
 /* PHOTO */
 .photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.photo-slot{background:var(--bg3);border:0.5px dashed var(--border2);border-radius:var(--r2);height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;overflow:hidden;position:relative}
-.photo-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:var(--r2)}
-.photo-slot .overlay-rm{position:absolute;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;font-size:22px}
-.photo-slot:active .overlay-rm{display:flex}
-.photo-lbl{font-size:11px;color:var(--text3)}
+.photo-slot{background:var(--bg3);border:0.5px dashed var(--border2);border-radius:var(--r2);height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;overflow:hidden;position:relative}
+.photo-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.photo-rm{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.7);border:none;border-radius:50%;width:26px;height:26px;color:#fff;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center}
+.photo-slot:hover .photo-rm{display:flex}
+.photo-lbl{font-size:11px;color:var(--text3);text-align:center;padding:0 8px}
 
-/* WEIGHT CHART */
-.wchart{height:110px;position:relative;margin:8px 0}
+/* CHART */
+.wchart{height:110px;margin:8px 0}
 .wchart svg{width:100%;height:100%}
 
 /* ÂNCORA */
-.anchor-display{border-left:2px solid var(--accent);padding-left:14px;font-size:14px;line-height:1.75;font-style:italic;color:var(--text)}
-
-/* UTILS */
-.flex-btwn{display:flex;align-items:center;justify-content:space-between}
-.mt8{margin-top:8px}
-.mt12{margin-top:12px}
-.mb8{margin-bottom:8px}
-.txt-sm{font-size:12px;color:var(--text2)}
-.txt-xs{font-size:11px;color:var(--text3)}
-.txt-acc{color:var(--accent)}
-.sep{height:0.5px;background:var(--border);margin:14px 0}
+.anchor-disp{border-left:2px solid var(--accent);padding-left:14px;font-size:14px;line-height:1.75;font-style:italic;color:var(--text)}
 
 /* TOAST */
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);border:0.5px solid var(--border2);border-radius:100px;padding:10px 20px;font-size:13px;color:var(--text);white-space:nowrap;z-index:300;opacity:0;transition:all .3s;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.flex-btwn{display:flex;align-items:center;justify-content:space-between}
+.mt8{margin-top:8px}.mb8{margin-bottom:8px}
+.txt-sm{font-size:12px;color:var(--text2)}
+.txt-xs{font-size:11px;color:var(--text3)}
+.txt-acc{color:var(--accent)}
 </style>
 </head>
 <body>
 
-<!-- ════════════ LOGIN ════════════ -->
+<!-- LOADING -->
+<div id="loading-screen">
+  <div class="logo-big">LUCAS<span>.</span>FIT</div>
+  <div class="spinner"></div>
+  <div class="loading-txt">Conectando...</div>
+</div>
+
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-logo">LUCAS<span>.</span>FIT</div>
   <div class="login-sub">Treino · Dieta · Shape</div>
-  <div class="sync-badge"><div class="sync-dot"></div>Dados sincronizados na nuvem</div>
+  <div class="sync-badge"><div class="sdot"></div>Sincronizado entre dispositivos</div>
   <div class="login-card">
     <h2 id="login-title">Entrar</h2>
-    <div class="field"><label>Usuário</label><input id="inp-user" type="text" placeholder="lucas" autocomplete="username"></div>
+    <div class="field"><label>E-mail</label><input id="inp-email" type="email" placeholder="seu@email.com" autocomplete="email"></div>
     <div class="field"><label>Senha</label><input id="inp-pass" type="password" placeholder="••••••" autocomplete="current-password"></div>
     <div class="login-err" id="login-err"></div>
-    <button class="btn-login" id="btn-login-action" onclick="doLogin()">Entrar →</button>
-    <button class="btn-switch" id="btn-switch-mode" onclick="switchMode()">Não tem conta? <span>Criar conta</span></button>
-    <div class="login-info">Seus dados ficam salvos na nuvem e<br>sincronizados em qualquer dispositivo.</div>
+    <button class="btn-login" id="btn-action" onclick="doAuth()">Entrar →</button>
+    <button class="btn-switch" id="btn-switch" onclick="toggleMode()">Não tem conta? <span>Criar conta</span></button>
   </div>
 </div>
 
-<!-- ════════════ APP ════════════ -->
+<!-- APP -->
 <div id="app">
 
 <!-- TREINO -->
 <div class="page active" id="page-treino">
   <div class="top-bar">
-    <div>
-      <h1>LUCAS<span>.</span>FIT</h1>
-      <div class="txt-xs" id="treino-date-lbl"></div>
-    </div>
-    <button class="user-btn" onclick="showUserMenu()">
-      <div class="sync-indicator" id="sync-dot"></div>
-      <span id="user-label">—</span>
+    <div><h1>LUCAS<span>.</span>FIT</h1><div class="txt-xs" id="date-lbl"></div></div>
+    <button class="user-btn" onclick="openUserModal()">
+      <div class="sync-ind" id="sync-dot"></div>
+      <span id="user-lbl">—</span>
     </button>
   </div>
   <div class="metrics">
@@ -242,22 +249,22 @@ body{display:flex;flex-direction:column}
     <div class="ctitle">Check-in de hoje</div>
     <div class="ci-row">
       <div class="ci-left"><div class="ci-emoji">🏋️</div><div><div class="ci-name">Musculação</div><div class="ci-st" id="st-m">Pendente</div></div></div>
-      <button class="chk-btn" id="btn-m" onclick="toggleCI('m')"></button>
+      <button class="chk-btn" id="btn-m" onclick="toggleCI('m')">✓</button>
     </div>
     <div class="ci-row">
       <div class="ci-left"><div class="ci-emoji">🥋</div><div><div class="ci-name">Jiu-Jitsu</div><div class="ci-st" id="st-j">Pendente</div></div></div>
-      <button class="chk-btn" id="btn-j" onclick="toggleCI('j')"></button>
+      <button class="chk-btn" id="btn-j" onclick="toggleCI('j')">✓</button>
     </div>
     <div class="ci-row">
       <div class="ci-left"><div class="ci-emoji">🏃</div><div><div class="ci-name">Cardio</div><div class="ci-st" id="st-c">Pendente</div></div></div>
-      <button class="chk-btn" id="btn-c" onclick="toggleCI('c')"></button>
+      <button class="chk-btn" id="btn-c" onclick="toggleCI('c')">✓</button>
     </div>
   </div>
   <div class="card">
     <div class="ctitle">🔥 Sequência</div>
     <div class="streak-box">
       <div class="streak-num" id="streak-n">0</div>
-      <div><div style="font-size:14px;font-weight:500">dias consecutivos</div><div class="txt-sm mt8">Semana: <span class="txt-acc" id="wk-count">0 treinos</span></div></div>
+      <div><div style="font-size:14px;font-weight:500">dias consecutivos</div><div class="txt-sm mt8">Semana: <span class="txt-acc" id="wk-cnt">0 treinos</span></div></div>
     </div>
   </div>
   <div class="card">
@@ -268,16 +275,16 @@ body{display:flex;flex-direction:column}
 
 <!-- DIETA -->
 <div class="page" id="page-dieta">
-  <div class="top-bar"><h1>DIETA</h1><div class="txt-sm">MAR/26.1</div></div>
+  <div class="top-bar"><h1>DIETA</h1><div class="txt-xs">Plano MAR/26.1</div></div>
   <div class="diet-nav">
     <button class="dnav-btn" onclick="dietNav(-1)">‹</button>
     <div class="dnav-lbl" id="diet-lbl">Hoje</div>
     <button class="dnav-btn" onclick="dietNav(1)">›</button>
   </div>
   <div class="card" style="text-align:center;padding:18px 16px 14px">
-    <div class="ctitle">Adesão de hoje</div>
+    <div class="ctitle">Adesão do dia</div>
     <div class="diet-score-num" id="d-score">—</div>
-    <div class="diet-score-lbl" id="d-score-lbl">marque as refeições abaixo</div>
+    <div class="diet-score-lbl" id="d-lbl">marque as refeições abaixo</div>
     <div class="prog"><div class="prog-fill" id="d-bar" style="width:0%"></div></div>
   </div>
   <div class="card card-sm">
@@ -289,8 +296,8 @@ body{display:flex;flex-direction:column}
 
 <!-- SHAPE -->
 <div class="page" id="page-shape">
-  <div class="top-bar"><h1>SHAPE</h1><div class="txt-xs">Uberlândia · 18 Jun</div></div>
-  <div class="card">
+  <div class="top-bar"><h1>SHAPE</h1><div class="txt-xs">Uberlândia · 18 Jun 2026</div></div>
+  <div class="card" style="padding:20px 16px">
     <div class="ctitle">Contagem regressiva</div>
     <div class="ctdown-num" id="ct-num">—</div>
     <div class="ctdown-sub">dias para Uberlândia</div>
@@ -301,68 +308,64 @@ body{display:flex;flex-direction:column}
     </div>
   </div>
   <div class="metrics">
-    <div class="metric"><div class="metric-val" id="s-peso">—</div><div class="metric-label">Peso atual</div></div>
+    <div class="metric"><div class="metric-val" id="s-atual">—</div><div class="metric-label">Peso atual</div></div>
     <div class="metric"><div class="metric-val" id="s-perda">—</div><div class="metric-label">Perda</div></div>
-    <div class="metric"><div class="metric-val" id="s-meta">—</div><div class="metric-label">Para meta</div></div>
+    <div class="metric"><div class="metric-val" id="s-falta">—</div><div class="metric-label">Para meta</div></div>
   </div>
   <div class="shape-tabs">
-    <button class="stab active" onclick="sTab(this,'st-reg')">Peso</button>
-    <button class="stab" onclick="sTab(this,'st-fotos')">Fotos</button>
+    <button class="stab active" onclick="sTab(this,'st-peso')">Peso</button>
+    <button class="stab" onclick="sTab(this,'st-foto')">Fotos</button>
     <button class="stab" onclick="sTab(this,'st-hist')">Histórico</button>
     <button class="stab" onclick="sTab(this,'st-anc')">Âncora</button>
   </div>
-  <!-- Peso -->
-  <div id="st-reg">
+  <div id="st-peso">
     <div class="card">
       <div class="ctitle">Registrar peso</div>
       <div class="fg"><label>Peso (kg)</label><input type="number" id="i-peso" step="0.1" placeholder="79.2"></div>
       <div class="fg"><label>Data</label><input type="date" id="i-data"></div>
-      <div class="fg"><label>Nota</label><textarea id="i-nota" placeholder="Como está o shape, energia, aderência..."></textarea></div>
-      <button class="btn-p" onclick="savePeso()">Salvar ✓</button>
+      <div class="fg"><label>Nota (opcional)</label><textarea id="i-nota" placeholder="Como está o shape, energia..."></textarea></div>
+      <button class="btn-p" onclick="savePeso()">Salvar registro ✓</button>
     </div>
     <div class="card">
-      <div class="ctitle">Meta de peso</div>
-      <div class="fg"><label>Peso inicial (kg)</label><input type="number" id="m-ini" step="0.1" placeholder="80" onchange="saveMeta()"></div>
-      <div class="fg"><label>Peso alvo (kg)</label><input type="number" id="m-alvo" step="0.1" placeholder="76" onchange="saveMeta()"></div>
+      <div class="ctitle">Configurar meta</div>
+      <div class="fg"><label>Peso inicial (kg)</label><input type="number" id="m-ini" step="0.1" placeholder="80" oninput="saveMeta()"></div>
+      <div class="fg"><label>Peso alvo (kg)</label><input type="number" id="m-alvo" step="0.1" placeholder="76" oninput="saveMeta()"></div>
     </div>
   </div>
-  <!-- Fotos -->
-  <div id="st-fotos" style="display:none">
+  <div id="st-foto" style="display:none">
     <div class="card">
       <div class="ctitle">Fotos de progresso</div>
-      <div class="txt-sm mb8">Toque para adicionar ou remover. As fotos ficam salvas no aparelho.</div>
+      <div class="txt-sm mb8">Toque no slot para adicionar. As fotos ficam salvas no seu perfil.</div>
       <div class="photo-grid" id="photo-grid"></div>
-      <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="addPhoto(this)">
+      <input type="file" id="ph-input" accept="image/*" style="display:none" onchange="photoSelected(this)">
     </div>
     <div class="card">
-      <div class="ctitle">Notas de progresso visual</div>
-      <div class="fg"><label>Observações</label><textarea id="foto-nota" placeholder="O que você está vendo no shape..."></textarea></div>
+      <div class="ctitle">Observações visuais</div>
+      <div class="fg"><label>Nota</label><textarea id="foto-nota" placeholder="O que você está vendo no shape..."></textarea></div>
       <button class="btn-p" onclick="saveFotoNota()">Salvar nota ✓</button>
     </div>
   </div>
-  <!-- Histórico -->
   <div id="st-hist" style="display:none">
     <div class="card">
-      <div class="ctitle">Gráfico de evolução</div>
+      <div class="ctitle">Evolução de peso</div>
       <div class="wchart"><svg id="w-svg"></svg></div>
     </div>
     <div class="card">
-      <div class="ctitle">Registros</div>
+      <div class="ctitle">Todos os registros</div>
       <div id="hist-list"><div class="txt-sm">Nenhum registro ainda.</div></div>
     </div>
   </div>
-  <!-- Âncora -->
   <div id="st-anc" style="display:none">
     <div class="card">
       <div class="ctitle">Âncora motivacional</div>
-      <div class="fg"><label>Em Uberlândia, eu quero...</label><textarea id="anc-1" placeholder="Aparecer com um shape que fala por mim."></textarea></div>
-      <div class="fg"><label>O que vou provar para mim mesmo</label><textarea id="anc-2" placeholder="Que disciplina não tem feriado."></textarea></div>
+      <div class="fg"><label>Em Uberlândia, eu quero...</label><textarea id="anc-1" placeholder="Aparecer com um shape que fala antes de eu abrir a boca."></textarea></div>
+      <div class="fg"><label>O que quero provar pra mim mesmo</label><textarea id="anc-2" placeholder="Que disciplina não tem feriado."></textarea></div>
       <div class="fg"><label>Quando quiser furar, vou lembrar que...</label><textarea id="anc-3" placeholder="Japaratinga — 3 kg na 1ª semana. O mesmo Lucas faz de novo."></textarea></div>
       <button class="btn-p" onclick="saveAncora()">Salvar âncora ✓</button>
     </div>
-    <div class="card" id="anc-display" style="display:none">
+    <div class="card" id="anc-disp" style="display:none">
       <div class="ctitle">Sua âncora</div>
-      <div class="anchor-display" id="anc-text"></div>
+      <div class="anchor-disp" id="anc-txt"></div>
     </div>
   </div>
 </div>
@@ -370,39 +373,171 @@ body{display:flex;flex-direction:column}
 </div><!-- /app -->
 
 <!-- MODAL TREINO -->
-<div class="overlay" id="modal-t" onclick="closeMod(event)">
+<div class="overlay" id="mod-treino" onclick="if(event.target===this)closeTreinoMod()">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="modal-head" id="mod-title"></div>
+    <div class="modal-head" id="mod-head"></div>
     <div id="mod-exs"></div>
-    <button class="modal-close" onclick="closeMod2()">Fechar</button>
+    <button class="modal-close" onclick="closeTreinoMod()">Fechar</button>
   </div>
 </div>
 
-<!-- USER MENU MODAL -->
-<div class="overlay" id="modal-user" onclick="closeUserMenu(event)">
-  <div class="modal" style="padding-bottom:24px">
+<!-- MODAL USER -->
+<div class="overlay" id="mod-user" onclick="if(event.target===this)closeUserModal()">
+  <div class="modal" style="padding-bottom:28px">
     <div class="modal-handle"></div>
-    <div class="modal-head">Conta</div>
+    <div class="modal-head">Minha conta</div>
     <div style="padding:20px">
-      <div class="txt-sm" id="um-info" style="margin-bottom:20px;line-height:1.8"></div>
+      <div class="txt-sm" id="user-info" style="margin-bottom:6px;line-height:1.9"></div>
+      <div class="txt-xs" id="sync-info" style="margin-bottom:20px"></div>
       <button class="btn-s" onclick="doLogout()">Sair da conta</button>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- NAV -->
 <nav class="nav">
   <button class="nav-item active" onclick="gotoPage('treino',this)"><div class="nav-icon">🏋️</div><div class="nav-label">TREINO</div></button>
   <button class="nav-item" onclick="gotoPage('dieta',this)"><div class="nav-icon">🥗</div><div class="nav-label">DIETA</div></button>
   <button class="nav-item" onclick="gotoPage('shape',this)"><div class="nav-icon">📊</div><div class="nav-label">SHAPE</div></button>
 </nav>
 
-<script>
-// ══════════ CONSTANTS ══════════
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCeZJ9SNzYx_ki8IYF1gUZ78f3Lvl8Gyj4",
+  authDomain: "lucasfit-710d8.firebaseapp.com",
+  projectId: "lucasfit-710d8",
+  storageBucket: "lucasfit-710d8.firebasestorage.app",
+  messagingSenderId: "869749140831",
+  appId: "1:869749140831:web:532ae2bcb789f06c449aea"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+
+// ── STATE ──
+let uid = null;
+let state = defaultState();
+let saveTimer = null;
+let unsub = null;
+
+function defaultState(){
+  return {checkins:{},cargas:{},exDone:{},pesos:[],meta:{inicio:80,alvo:76},ancora:{},dieta:{},photos:[],fotoNota:''};
+}
+
+// ── AUTH ──
+window.doAuth = async function(){
+  const email = document.getElementById('inp-email').value.trim();
+  const pass = document.getElementById('inp-pass').value;
+  if(!email||!pass){setErr('Preencha e-mail e senha');return}
+  setErr('');
+  const btn = document.getElementById('btn-action');
+  btn.disabled = true; btn.textContent = 'Aguarde...';
+  try {
+    if(window._creating){
+      if(pass.length < 6){setErr('Senha precisa ter pelo menos 6 caracteres');btn.disabled=false;btn.textContent='Criar conta →';return}
+      await createUserWithEmailAndPassword(auth, email, pass);
+    } else {
+      await signInWithEmailAndPassword(auth, email, pass);
+    }
+  } catch(e){
+    const msgs = {
+      'auth/user-not-found':'Usuário não encontrado. Crie uma conta.',
+      'auth/wrong-password':'Senha incorreta.',
+      'auth/invalid-credential':'E-mail ou senha incorretos.',
+      'auth/email-already-in-use':'E-mail já cadastrado. Faça login.',
+      'auth/invalid-email':'E-mail inválido.',
+      'auth/too-many-requests':'Muitas tentativas. Aguarde um momento.',
+    };
+    setErr(msgs[e.code]||'Erro: '+e.message);
+    btn.disabled=false; btn.textContent=window._creating?'Criar conta →':'Entrar →';
+  }
+};
+
+window.toggleMode = function(){
+  window._creating = !window._creating;
+  document.getElementById('login-title').textContent = window._creating?'Criar conta':'Entrar';
+  document.getElementById('btn-action').textContent = window._creating?'Criar conta →':'Entrar →';
+  document.getElementById('btn-switch').innerHTML = window._creating?'Já tem conta? <span>Entrar</span>':'Não tem conta? <span>Criar conta</span>';
+  setErr('');
+};
+
+window.doLogout = async function(){
+  if(unsub){unsub();unsub=null}
+  await signOut(auth);
+  uid=null; state=defaultState();
+  closeUserModal();
+  document.getElementById('app').classList.remove('show');
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('inp-pass').value='';
+};
+
+function setErr(m){document.getElementById('login-err').textContent=m}
+
+// ── FIRESTORE ──
+async function loadData(){
+  setSyncStatus('saving');
+  const ref = doc(db,'users',uid);
+  const snap = await getDoc(ref);
+  if(snap.exists()) state = {...defaultState(),...snap.data()};
+  else { state=defaultState(); await saveData(); }
+  setSyncStatus('ok');
+  // realtime listener
+  if(unsub)unsub();
+  unsub = onSnapshot(ref, snap2=>{
+    if(snap2.exists()){state={...defaultState(),...snap2.data()};refreshAllViews();}
+  });
+}
+
+async function saveData(){
+  if(!uid)return;
+  setSyncStatus('saving');
+  try{
+    await setDoc(doc(db,'users',uid), state, {merge:true});
+    setSyncStatus('ok');
+    document.getElementById('sync-info').textContent='Salvo: '+new Date().toLocaleTimeString('pt-BR');
+  }catch(e){setSyncStatus('err');toast('Erro ao salvar ⚠️');}
+}
+
+function scheduleSave(){
+  if(saveTimer)clearTimeout(saveTimer);
+  saveTimer=setTimeout(saveData,1000);
+}
+
+function setSyncStatus(s){
+  const d=document.getElementById('sync-dot');if(!d)return;
+  d.className='sync-ind'+(s==='saving'?' saving':s==='err'?' err':'');
+}
+
+// ── AUTH STATE ──
+onAuthStateChanged(auth, async user=>{
+  document.getElementById('loading-screen').style.display='none';
+  if(user){
+    uid=user.uid;
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').classList.add('show');
+    document.getElementById('user-lbl').textContent=user.email.split('@')[0];
+    document.getElementById('user-info').innerHTML=`E-mail: <strong>${user.email}</strong><br>UID: <code style="font-size:10px;color:var(--text3)">${user.uid.slice(0,16)}...</code>`;
+    await loadData();
+    initApp();
+  } else {
+    document.getElementById('loading-screen').style.display='none';
+    document.getElementById('login-screen').style.display='flex';
+  }
+});
+
+// ── DATA ACCESS ──
+function S(){return state}
+function save(){scheduleSave()}
+
+// ══════════ TREINO ══════════
 const TREINOS=[
   {tag:'DIA A',nome:'Peito + Tríceps',meta:'6–8 séries por grupo',exs:[
     {n:'Supino reto barra',d:'4×8–10 · 90s pausa',nt:''},
@@ -432,7 +567,7 @@ const TREINOS=[
     {n:'Afundo búlgaro',d:'3×10/lado · 75s',nt:''},
     {n:'Panturrilha em pé (Smith)',d:'4×15–20 · 60s',nt:''},
   ]},
-  {tag:'DIA D',nome:'Ombro-free · Braços',meta:'Sem carga direta ombro',exs:[
+  {tag:'DIA D',nome:'Ombro-free · Braços',meta:'Sem carga direta no ombro',exs:[
     {n:'Rosca scott barra EZ',d:'4×10–12 · 75s',nt:''},
     {n:'Rosca 21s cabo',d:'3×21 · 90s',nt:''},
     {n:'Rosca inversa',d:'3×15 · 60s',nt:''},
@@ -443,15 +578,15 @@ const TREINOS=[
   ]},
 ];
 
-const REFEICOES=[
+const REFS=[
   {hora:'09:00',nome:'Café da manhã',sub:'Pós-treino',
-   itens:['Pão artesano 2 fatias (50g) ou tapioca 60g','2 ovos inteiros + 2 claras (160g)','Creme de ricota 20g','Banana grande (100g)','Psyllium 15g'],
+   itens:['Pão artesano 2 fatias (50g) ou tapioca (60g)','2 ovos inteiros + 2 claras','Creme de ricota 20g','Banana grande (100g)','Psyllium 15g'],
    kcal:'~450 kcal · ~35g proteína'},
   {hora:'12:00',nome:'Almoço',sub:'Refeição principal',
-   itens:['Carne/frango/tilápia (160g)','Arroz integral cozido (125g)','Feijão carioca (40g)','Brócolis (60g)','Cenoura cozida (30g)','Salada tomate + cebola à vontade'],
+   itens:['Carne/frango/tilápia (160g)','Arroz integral (125g)','Feijão carioca (40g)','Brócolis (60g)','Cenoura cozida (30g)','Salada tomate + cebola à vontade'],
    kcal:'~680 kcal · ~52g proteína'},
-  {hora:'15:00',nome:'Lanche da tarde',sub:'⚠️ Prepare antes — ponto crítico',
-   itens:['Rápido: Whey concentrado 40g + farinha de arroz 20g','Completo: Pão integral + frango desfiado 40g + requeijão light 10g','+ Maçã (130g) ou banana (100g)'],
+  {hora:'15:00',nome:'Lanche da tarde',sub:'⚠️ Prepare antes',
+   itens:['Rápido: Whey 40g + farinha de arroz 20g','Completo: Pão integral + frango 40g + requeijão 10g','+ Maçã (130g) ou banana (100g)'],
    kcal:'~300 kcal · ~35g proteína'},
   {hora:'20:00',nome:'Jantar',sub:'',
    itens:['Frango grelhado (160g)','Arroz branco (90g)','Brócolis (50g)','Cenoura (30g)','Salada à vontade'],
@@ -461,276 +596,108 @@ const REFEICOES=[
    kcal:'~220 kcal · ~26g proteína'},
 ];
 
-// ══════════ AUTH & CLOUD ══════════
-const STORE_KEY='lf_state_v2';
-const AUTH_KEY='lf_auth';
-let currentUser=null;
-let isCreating=false;
-let syncTimer=null;
-
-function hashStr(s){
-  let h=0;
-  for(let i=0;i<s.length;i++){h=Math.imul(31,h)+s.charCodeAt(i)|0}
-  return Math.abs(h).toString(36);
-}
-
-async function cloudGet(key){
-  try{const r=await window.storage.get(key,true);return r?JSON.parse(r.value):null}catch{return null}
-}
-async function cloudSet(key,val){
-  try{await window.storage.set(key,JSON.stringify(val),true);return true}catch{return false}
-}
-
-function lsGet(k){try{return JSON.parse(localStorage.getItem(k))}catch{return null}}
-function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
-
-async function doLogin(){
-  const u=(document.getElementById('inp-user').value||'').trim().toLowerCase();
-  const p=document.getElementById('inp-pass').value;
-  if(!u||!p){setErr('Preencha usuário e senha');return}
-  setErr('');
-  document.getElementById('btn-login-action').textContent='Entrando...';
-  
-  const accountKey='lf_account_'+u;
-  const account=await cloudGet(accountKey);
-  
-  if(isCreating){
-    if(account){setErr('Usuário já existe. Faça login.');document.getElementById('btn-login-action').textContent='Criar conta →';return}
-    if(p.length<4){setErr('Senha precisa ter pelo menos 4 caracteres');document.getElementById('btn-login-action').textContent='Criar conta →';return}
-    await cloudSet(accountKey,{user:u,passHash:hashStr(u+p),created:new Date().toISOString()});
-    lsSet(AUTH_KEY,{user:u,passHash:hashStr(u+p)});
-    currentUser=u;
-    await initUserData();
-    launchApp();
-  } else {
-    if(!account){setErr('Usuário não encontrado. Crie uma conta.');document.getElementById('btn-login-action').textContent='Entrar →';return}
-    if(account.passHash!==hashStr(u+p)){setErr('Senha incorreta.');document.getElementById('btn-login-action').textContent='Entrar →';return}
-    lsSet(AUTH_KEY,{user:u,passHash:hashStr(u+p)});
-    currentUser=u;
-    await loadUserData();
-    launchApp();
-  }
-}
-
-async function autoLogin(){
-  const saved=lsGet(AUTH_KEY);
-  if(!saved||!saved.user)return false;
-  const account=await cloudGet('lf_account_'+saved.user);
-  if(!account||account.passHash!==saved.passHash)return false;
-  currentUser=saved.user;
-  await loadUserData();
-  return true;
-}
-
-async function initUserData(){
-  state={checkins:{},cargas:{},exDone:{},pesos:[],meta:{inicio:80,alvo:76},ancora:{},dieta:{},photos:[],fotoNota:''};
-  await pushToCloud();
-}
-
-async function loadUserData(){
-  setSyncStatus('syncing');
-  const cloud=await cloudGet('lf_data_'+currentUser);
-  if(cloud){
-    state=cloud;
-    // merge with local if local is newer
-    const local=lsGet(STORE_KEY+'_'+currentUser);
-    if(local&&local._ts&&state._ts&&local._ts>state._ts)state=local;
-  } else {
-    const local=lsGet(STORE_KEY+'_'+currentUser);
-    state=local||{checkins:{},cargas:{},exDone:{},pesos:[],meta:{inicio:80,alvo:76},ancora:{},dieta:{},photos:[],fotoNota:''};
-  }
-  setSyncStatus('ok');
-}
-
-async function pushToCloud(){
-  setSyncStatus('syncing');
-  state._ts=Date.now();
-  lsSet(STORE_KEY+'_'+currentUser,state);
-  const ok=await cloudSet('lf_data_'+currentUser,state);
-  setSyncStatus(ok?'ok':'err');
-}
-
-function scheduleSave(){
-  if(syncTimer)clearTimeout(syncTimer);
-  syncTimer=setTimeout(pushToCloud,1200);
-}
-
-function setSyncStatus(s){
-  const d=document.getElementById('sync-dot');
-  if(!d)return;
-  d.className='sync-indicator'+(s==='syncing'?' syncing':s==='err'?' err':'');
-}
-
-function setErr(msg){document.getElementById('login-err').textContent=msg}
-
-function switchMode(){
-  isCreating=!isCreating;
-  document.getElementById('login-title').textContent=isCreating?'Criar conta':'Entrar';
-  document.getElementById('btn-login-action').textContent=isCreating?'Criar conta →':'Entrar →';
-  document.getElementById('btn-switch-mode').innerHTML=isCreating?'Já tem conta? <span>Entrar</span>':'Não tem conta? <span>Criar conta</span>';
-  setErr('');
-}
-
-function launchApp(){
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('app').classList.add('show');
-  document.getElementById('user-label').textContent=currentUser;
-  initApp();
-}
-
-function doLogout(){
-  lsSet(AUTH_KEY,null);
-  closeUserMenu2();
-  document.getElementById('login-screen').style.display='flex';
-  document.getElementById('app').classList.remove('show');
-  document.getElementById('inp-pass').value='';
-  setErr('');
-}
-
-function showUserMenu(){
-  document.getElementById('um-info').innerHTML=`Usuário: <strong>${currentUser}</strong><br>Dados sincronizados na nuvem ☁️`;
-  document.getElementById('modal-user').classList.add('open');
-}
-function closeUserMenu(e){if(e.target.id==='modal-user')closeUserMenu2()}
-function closeUserMenu2(){document.getElementById('modal-user').classList.remove('open')}
-
-// ══════════ STATE ══════════
-let state={checkins:{},cargas:{},exDone:{},pesos:[],meta:{inicio:80,alvo:76},ancora:{},dieta:{},photos:[],fotoNota:''};
-function saveState(){scheduleSave()}
 function todayK(){return new Date().toISOString().slice(0,10)}
 
-// ══════════ NAV ══════════
-function gotoPage(id,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  btn.classList.add('active');
-  if(id==='dieta')renderDieta();
-  if(id==='shape')renderShape();
-}
-
-// ══════════ TREINO ══════════
-function toggleCI(t){
+window.toggleCI=function(t){
   const k=todayK();
-  if(!state.checkins[k])state.checkins[k]={};
-  state.checkins[k][t]=!state.checkins[k][t];
-  saveState();renderCI();renderMetrics();
-}
+  if(!S().checkins[k])S().checkins[k]={};
+  S().checkins[k][t]=!S().checkins[k][t];
+  save();renderCI();renderMetrics();
+};
 
 function renderCI(){
-  const k=todayK();
-  const d=state.checkins[k]||{};
-  [{id:'m',lbl:'Musculação'},{id:'j',lbl:'Jiu-Jitsu'},{id:'c',lbl:'Cardio'}].forEach(({id})=>{
-    const btn=document.getElementById('btn-'+id);
-    const st=document.getElementById('st-'+id);
-    if(d[id]){btn.classList.add('done');btn.textContent='✓';st.textContent='Concluído hoje ✓';st.style.color='var(--accent)'}
-    else{btn.classList.remove('done');btn.textContent='';st.textContent='Pendente';st.style.color=''}
+  const k=todayK();const d=S().checkins[k]||{};
+  [{id:'m',label:'Musculação'},{id:'j',label:'Jiu-Jitsu'},{id:'c',label:'Cardio'}].forEach(({id})=>{
+    const btn=document.getElementById('btn-'+id);const st=document.getElementById('st-'+id);
+    if(d[id]){btn.classList.add('done');st.textContent='Concluído ✓';st.style.color='var(--accent)'}
+    else{btn.classList.remove('done');st.textContent='Pendente';st.style.color=''}
   });
-  // streak
   let streak=0;const d2=new Date();d2.setHours(0,0,0,0);
-  while(true){const k2=d2.toISOString().slice(0,10);const ci=state.checkins[k2]||{};if(Object.values(ci).some(v=>v)){streak++;d2.setDate(d2.getDate()-1)}else break}
+  while(true){const k2=d2.toISOString().slice(0,10);const ci=S().checkins[k2]||{};if(Object.values(ci).some(v=>v)){streak++;d2.setDate(d2.getDate()-1)}else break}
   document.getElementById('streak-n').textContent=streak;
   let wk=0;const now=new Date();now.setHours(0,0,0,0);
-  for(let i=0;i<7;i++){const d3=new Date(now);d3.setDate(now.getDate()-i);const ck=state.checkins[d3.toISOString().slice(0,10)]||{};if(Object.values(ck).some(v=>v))wk++}
-  document.getElementById('wk-count').textContent=wk+' treinos';
+  for(let i=0;i<7;i++){const d3=new Date(now);d3.setDate(now.getDate()-i);const ck=S().checkins[d3.toISOString().slice(0,10)]||{};if(Object.values(ck).some(v=>v))wk++}
+  document.getElementById('wk-cnt').textContent=wk+' treinos';
 }
 
 function renderMetrics(){
-  const counts={m:0,j:0,c:0};
-  for(const v of Object.values(state.checkins)){if(v.m)counts.m++;if(v.j)counts.j++;if(v.c)counts.c++}
-  document.getElementById('cnt-m').textContent=counts.m;
-  document.getElementById('cnt-j').textContent=counts.j;
-  document.getElementById('cnt-c').textContent=counts.c;
+  const c={m:0,j:0,c:0};
+  for(const v of Object.values(S().checkins)){if(v.m)c.m++;if(v.j)c.j++;if(v.c)c.c++}
+  document.getElementById('cnt-m').textContent=c.m;
+  document.getElementById('cnt-j').textContent=c.j;
+  document.getElementById('cnt-c').textContent=c.c;
 }
 
 function renderTreinoList(){
   const k=todayK();
   document.getElementById('treino-list').innerHTML=TREINOS.map((t,i)=>{
-    const done=state.exDone[k]?Object.keys(state.exDone[k]).filter(e=>e.startsWith(i+'_')&&state.exDone[k][e]).length:0;
-    const total=t.exs.length;
+    const feitos=S().exDone[k]?Object.keys(S().exDone[k]).filter(e=>e.startsWith(i+'_')&&S().exDone[k][e]).length:0;
     return`<div class="treino-card" onclick="openTreino(${i})">
       <div><div class="tcard-tag">${t.tag}</div><div class="tcard-name">${t.nome}</div><div class="tcard-meta">${t.meta}</div>
-      <div class="t-progress">${done>0?`<span>${done}/${total}</span> exercícios feitos hoje`:'Toque para iniciar'}</div></div>
+      <div class="tcard-prog">${feitos>0?`<span>${feitos}/${t.exs.length}</span> feitos hoje`:'Toque para iniciar'}</div></div>
       <div style="color:var(--text3);font-size:20px">›</div>
     </div>`;
   }).join('');
 }
 
-function openTreino(i){
+window.openTreino=function(i){
   const t=TREINOS[i];const k=todayK();
-  if(!state.exDone[k])state.exDone[k]={};
-  document.getElementById('mod-title').textContent=t.tag+' — '+t.nome;
+  if(!S().exDone[k])S().exDone[k]={};
+  document.getElementById('mod-head').textContent=t.tag+' — '+t.nome;
   document.getElementById('mod-exs').innerHTML=t.exs.map((ex,j)=>{
-    const ek=i+'_'+j;const done=state.exDone[k][ek]?'done':'';
-    const carga=state.cargas[ek]||'';
+    const ek=i+'_'+j;const done=S().exDone[k][ek]?'done':'';
+    const carga=S().cargas[ek]||'';
     return`<div class="ex-item">
-      <button class="ex-chk ${done}" id="ec${i}-${j}" onclick="toggleEx(${i},${j})">${done?'✓':''}</button>
+      <button class="ex-chk ${done}" id="ec${i}-${j}" onclick="toggleEx(${i},${j})">✓</button>
       <div class="ex-inf">
-        <div class="ex-nm">${ex.n}</div>
-        <div class="ex-dt">${ex.d}</div>
+        <div class="ex-nm">${ex.n}</div><div class="ex-dt">${ex.d}</div>
         ${ex.nt?`<div class="ex-nt">${ex.nt}</div>`:''}
         <div class="ex-cg"><input type="number" step="0.5" value="${carga}" placeholder="kg" onchange="saveCarga('${ek}',this.value)"><label>kg</label></div>
       </div>
     </div>`;
   }).join('');
-  document.getElementById('modal-t').classList.add('open');
-}
+  document.getElementById('mod-treino').classList.add('open');
+};
 
-function toggleEx(i,j){
-  const k=todayK();if(!state.exDone[k])state.exDone[k]={};
-  const ek=i+'_'+j;state.exDone[k][ek]=!state.exDone[k][ek];
-  saveState();renderTreinoList();
+window.toggleEx=function(i,j){
+  const k=todayK();if(!S().exDone[k])S().exDone[k]={};
+  const ek=i+'_'+j;S().exDone[k][ek]=!S().exDone[k][ek];
+  save();renderTreinoList();
   const btn=document.getElementById(`ec${i}-${j}`);
-  btn.classList.toggle('done');btn.textContent=state.exDone[k][ek]?'✓':'';
-}
+  btn.classList.toggle('done');
+};
 
-function saveCarga(ek,v){state.cargas[ek]=parseFloat(v)||0;saveState()}
-function closeMod(e){if(e.target.id==='modal-t')closeMod2()}
-function closeMod2(){document.getElementById('modal-t').classList.remove('open')}
-
-function setTrDate(){
-  const ds=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
-  const ms=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  const n=new Date();
-  document.getElementById('treino-date-lbl').textContent=`${ds[n.getDay()]}, ${n.getDate()} ${ms[n.getMonth()]}`;
-  const inp=document.getElementById('i-data');if(inp)inp.value=n.toISOString().slice(0,10);
-}
+window.saveCarga=function(ek,v){S().cargas[ek]=parseFloat(v)||0;save()};
+window.closeTreinoMod=function(){document.getElementById('mod-treino').classList.remove('open')};
 
 // ══════════ DIETA ══════════
 let dietOff=0;let refOpen={};
-function dietNav(d){dietOff+=d;renderDieta()}
+window.dietNav=function(d){dietOff+=d;renderDieta()};
 function dietK(){const d=new Date();d.setDate(d.getDate()+dietOff);return d.toISOString().slice(0,10)}
 function dietDate(){const d=new Date();d.setDate(d.getDate()+dietOff);return d}
-function getDDay(k){if(!state.dieta[k])state.dieta[k]={};return state.dieta[k]}
-function setRefSt(idx,st){const k=dietK();getDDay(k);state.dieta[k][idx]=st;saveState();renderDieta()}
-function toggleRef(idx){refOpen[idx]=!refOpen[idx];renderDieta()}
+window.setRefSt=function(idx,st){const k=dietK();if(!S().dieta[k])S().dieta[k]={};S().dieta[k][idx]=st;save();renderDieta()};
+window.toggleRef=function(idx){refOpen[idx]=!refOpen[idx];renderDieta()};
 
 function renderDieta(){
   const k=dietK();const d=dietDate();
   const ms=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   const ds=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  const lbl=dietOff===0?`Hoje — ${d.getDate()} ${ms[d.getMonth()]}`:`${ds[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`;
-  document.getElementById('diet-lbl').textContent=lbl;
-  const dd=getDDay(k);
-  const total=REFEICOES.length;
-  const done=REFEICOES.filter((_,i)=>dd[i]==='ok').length;
-  const pct=Math.round(done/total*100);
+  document.getElementById('diet-lbl').textContent=dietOff===0?`Hoje — ${d.getDate()} ${ms[d.getMonth()]}`:`${ds[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`;
+  const dd=S().dieta[k]||{};
+  const done=REFS.filter((_,i)=>dd[i]==='ok').length;
+  const pct=Math.round(done/REFS.length*100);
   const sc=document.getElementById('d-score');
   sc.textContent=pct+'%';
   sc.style.color=pct>=80?'var(--green)':pct>=50?'var(--orange)':'var(--red)';
   document.getElementById('d-bar').style.width=pct+'%';
   document.getElementById('d-bar').style.background=pct>=80?'var(--green)':pct>=50?'var(--orange)':'var(--red)';
-  document.getElementById('d-score-lbl').textContent=pct===0?'marque as refeições abaixo':pct<40?'começando…':pct<70?'metade do caminho':pct<100?'quase lá ✓':'dia perfeito 🎯';
-  // week
-  let wkPcts=[];
-  for(let i=6;i>=0;i--){const dd2=new Date();dd2.setDate(dd2.getDate()-i);const k2=dd2.toISOString().slice(0,10);const d2=state.dieta[k2]||{};wkPcts.push(Math.round(REFEICOES.filter((_,j)=>d2[j]==='ok').length/total*100))}
-  document.getElementById('wk-dots').innerHTML=wkPcts.map(p=>`<div class="wdot ${p>=80?'full':p>=40?'partial':p>0?'miss':''}"></div>`).join('');
-  const active=wkPcts.filter(p=>p>0);
-  document.getElementById('wk-pct').textContent=active.length?Math.round(active.reduce((a,b)=>a+b,0)/active.length)+'% média':'—';
-  // refeições
-  document.getElementById('refs-list').innerHTML=REFEICOES.map((r,i)=>{
-    const st=dd[i];const open=refOpen[i];
-    const cls=st==='ok'?'ok':st==='miss'?'miss':'';
+  document.getElementById('d-lbl').textContent=pct===0?'marque as refeições abaixo':pct<40?'começando…':pct<70?'metade do caminho':pct<100?'quase lá ✓':'dia perfeito 🎯';
+  let wkp=[];
+  for(let i=6;i>=0;i--){const dd2=new Date();dd2.setDate(dd2.getDate()-i);const k2=dd2.toISOString().slice(0,10);const d2=S().dieta[k2]||{};wkp.push(Math.round(REFS.filter((_,j)=>d2[j]==='ok').length/REFS.length*100))}
+  document.getElementById('wk-dots').innerHTML=wkp.map(p=>`<div class="wdot ${p>=80?'full':p>=40?'partial':p>0?'miss':''}"></div>`).join('');
+  const act=wkp.filter(p=>p>0);document.getElementById('wk-pct').textContent=act.length?Math.round(act.reduce((a,b)=>a+b,0)/act.length)+'% média':'—';
+  document.getElementById('refs-list').innerHTML=REFS.map((r,i)=>{
+    const st=dd[i];const open=refOpen[i];const cls=st==='ok'?'ok':st==='miss'?'miss':'';
     const icon=st==='ok'?'✅':st==='miss'?'❌':'⬜';
     return`<div class="ref-card ${cls}">
       <div class="ref-head" onclick="toggleRef(${i})">
@@ -738,7 +705,7 @@ function renderDieta(){
         <div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px">${icon}</span><span style="color:var(--text3)">${open?'▲':'▼'}</span></div>
       </div>
       ${open?`<div class="ref-body">
-        <div class="ref-itens">${r.itens.map(it=>`<div class="ref-item">• ${it}</div>`).join('')}</div>
+        ${r.itens.map(it=>`<div class="ref-item">• ${it}</div>`).join('')}
         <div class="ref-kcal">${r.kcal}</div>
         <div class="ref-actions"><button class="btn-ok" onclick="setRefSt(${i},'ok')">✓ Fiz esta refeição</button><button class="btn-miss" onclick="setRefSt(${i},'miss')">✗ Não fiz</button></div>
       </div>`:''}
@@ -749,159 +716,166 @@ function renderDieta(){
 // ══════════ SHAPE ══════════
 const TARGET=new Date(2026,5,18);const START=new Date(2026,3,20);
 
-function sTab(btn,id){
-  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
-  ['st-reg','st-fotos','st-hist','st-anc'].forEach(t=>document.getElementById(t).style.display='none');
-  document.getElementById(id).style.display='block';
-  if(id==='st-hist')renderWChart();
-  if(id==='st-anc')renderAncora();
-  if(id==='st-fotos')renderPhotos();
-}
-
 function renderShape(){
-  const now=new Date();now.setHours(0,0,0,0);
-  TARGET.setHours(0,0,0,0);START.setHours(0,0,0,0);
+  const now=new Date();now.setHours(0,0,0,0);TARGET.setHours(0,0,0,0);START.setHours(0,0,0,0);
   const dias=Math.max(0,Math.round((TARGET-now)/864e5));
   const total=Math.round((TARGET-START)/864e5);
-  const pct=Math.min(100,Math.round((total-dias)/total*100));
+  const pct=Math.min(100,Math.round(((total-dias)/total)*100));
   document.getElementById('ct-num').textContent=dias;
   document.getElementById('ct-bar').style.width=pct+'%';
   document.getElementById('ct-pct').textContent=pct+'% do caminho percorrido';
-  const m=state.meta;
+  const m=S().meta||{};
   if(m.inicio)document.getElementById('m-ini').value=m.inicio;
   if(m.alvo)document.getElementById('m-alvo').value=m.alvo;
-  const ps=state.pesos.slice().sort((a,b)=>a.data>b.data?1:-1);
+  const ps=(S().pesos||[]).slice().sort((a,b)=>a.data>b.data?1:-1);
   const ult=ps[ps.length-1];
   if(ult){
-    document.getElementById('s-peso').textContent=parseFloat(ult.peso).toFixed(1)+' kg';
+    document.getElementById('s-atual').textContent=parseFloat(ult.peso).toFixed(1)+' kg';
     const perda=parseFloat(m.inicio||80)-parseFloat(ult.peso);
     document.getElementById('s-perda').textContent=(perda>0?'-':'+')+(Math.abs(perda)).toFixed(1)+' kg';
-    const para=parseFloat(ult.peso)-parseFloat(m.alvo||76);
-    document.getElementById('s-meta').textContent=para>0?para.toFixed(1)+' kg':'Meta! 🎯';
+    const falta=parseFloat(ult.peso)-parseFloat(m.alvo||76);
+    document.getElementById('s-falta').textContent=falta>0?falta.toFixed(1)+' kg':'Meta! 🎯';
   }
 }
 
-function savePeso(){
+window.sTab=function(btn,id){
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
+  ['st-peso','st-foto','st-hist','st-anc'].forEach(t=>document.getElementById(t).style.display='none');
+  document.getElementById(id).style.display='block';
+  if(id==='st-hist')renderHist();
+  if(id==='st-anc')renderAncora();
+  if(id==='st-foto')renderPhotos();
+};
+
+window.savePeso=function(){
   const p=parseFloat(document.getElementById('i-peso').value);
   const d=document.getElementById('i-data').value;
   const n=document.getElementById('i-nota').value;
   if(!p||!d)return;
-  state.pesos.push({peso:p,data:d,nota:n,id:Date.now()});
-  saveState();renderShape();
+  if(!S().pesos)S().pesos=[];
+  S().pesos.push({peso:p,data:d,nota:n,id:Date.now()});
+  save();renderShape();renderHist();
   document.getElementById('i-peso').value='';document.getElementById('i-nota').value='';
   toast('Peso salvo ✓');
-}
+};
 
-function saveMeta(){
-  state.meta.inicio=parseFloat(document.getElementById('m-ini').value)||80;
-  state.meta.alvo=parseFloat(document.getElementById('m-alvo').value)||76;
-  saveState();renderShape();
-}
+window.saveMeta=function(){
+  const ini=parseFloat(document.getElementById('m-ini').value);
+  const alvo=parseFloat(document.getElementById('m-alvo').value);
+  if(ini)S().meta.inicio=ini;if(alvo)S().meta.alvo=alvo;
+  save();renderShape();
+};
 
-function renderWChart(){
-  const ps=state.pesos.slice().sort((a,b)=>a.data>b.data?1:-1);
+window.delPeso=function(id){
+  S().pesos=S().pesos.filter(p=>p.id!==id);save();renderShape();renderHist();toast('Registro removido');
+};
+
+function renderHist(){
+  const ps=(S().pesos||[]).slice().sort((a,b)=>a.data>b.data?1:-1);
   const svg=document.getElementById('w-svg');
   const W=svg.clientWidth||300,H=svg.clientHeight||110;
-  if(ps.length<2){svg.innerHTML=`<text x="50%" y="50%" fill="#444" font-size="12" text-anchor="middle" dy="4">Adicione pelo menos 2 registros</text>`;return}
-  const vals=ps.map(p=>parseFloat(p.peso));
-  const mn=Math.min(...vals)-0.5,mx=Math.max(...vals)+0.5;
-  const px=i=>W*0.05+(i/(ps.length-1))*W*0.9;
-  const py=v=>H-18-((v-mn)/(mx-mn))*(H-28);
-  const pts=ps.map((p,i)=>`${px(i)},${py(parseFloat(p.peso))}`).join(' ');
-  const meta=parseFloat(state.meta.alvo)||76;
-  const my=py(Math.max(mn,Math.min(mx,meta)));
+  if(ps.length<2){svg.innerHTML=`<text x="50%" y="50%" fill="#444" font-size="12" text-anchor="middle" dy="4">Adicione pelo menos 2 registros</text>`}
+  else{
+    const vals=ps.map(p=>parseFloat(p.peso));
+    const mn=Math.min(...vals)-0.5,mx=Math.max(...vals)+0.5;
+    const px=i=>W*.05+(i/(ps.length-1))*W*.9;
+    const py=v=>H-18-((v-mn)/(mx-mn))*(H-28);
+    const pts=ps.map((p,i)=>`${px(i)},${py(parseFloat(p.peso))}`).join(' ');
+    const meta=parseFloat(S().meta.alvo)||76;
+    const my=py(Math.max(mn,Math.min(mx,meta)));
+    svg.innerHTML=`<polyline points="${pts}" fill="none" stroke="#c8f542" stroke-width="2" stroke-linejoin="round"/>
+    ${ps.map((p,i)=>`<circle cx="${px(i)}" cy="${py(parseFloat(p.peso))}" r="4" fill="#c8f542"/>`).join('')}
+    <line x1="${W*.05}" y1="${my}" x2="${W*.95}" y2="${my}" stroke="#ff4444" stroke-width="1" stroke-dasharray="4,4"/>
+    <text x="${W*.95}" y="${my-4}" fill="#ff4444" font-size="10" text-anchor="end">meta</text>`;
+  }
   const el=document.getElementById('hist-list');
-  const sorted=ps.slice().reverse();
+  const sorted=(S().pesos||[]).slice().sort((a,b)=>a.data>b.data?-1:1);
   el.innerHTML=sorted.length?sorted.map((p,i,arr)=>{
     const prev=arr[i+1];const diff=prev?parseFloat(p.peso)-parseFloat(prev.peso):null;
     const dc=diff!=null?`<div class="wp-diff" style="color:${diff<0?'var(--green)':diff>0?'var(--red)':'var(--text2)'}">${diff>0?'+':''}${diff.toFixed(1)} kg</div>`:'';
-    return`<div class="wp-entry"><div><div class="wp-date">${p.data}</div>${p.nota?`<div class="wp-nota">${p.nota}</div>`:''}</div><div style="text-align:right"><div class="wp-val">${parseFloat(p.peso).toFixed(1)} kg</div>${dc}</div></div>`;
-  }).join(''):'<div class="txt-sm">Nenhum registro.</div>';
-  svg.innerHTML=`
-    <polyline points="${pts}" fill="none" stroke="#c8f542" stroke-width="2" stroke-linejoin="round"/>
-    ${ps.map((p,i)=>`<circle cx="${px(i)}" cy="${py(parseFloat(p.peso))}" r="4" fill="#c8f542"/>`).join('')}
-    <line x1="${W*.05}" y1="${my}" x2="${W*.95}" y2="${my}" stroke="#ff4444" stroke-width="1" stroke-dasharray="4,4"/>
-    <text x="${W*.96}" y="${my-4}" fill="#ff4444" font-size="10" text-anchor="end">meta</text>`;
+    return`<div class="wp-entry"><div><div class="wp-date">${p.data}</div>${p.nota?`<div class="wp-nota">${p.nota}</div>`:''}</div>
+    <div style="text-align:right"><div class="wp-val">${parseFloat(p.peso).toFixed(1)} kg</div>${dc}<button class="del-btn" onclick="delPeso(${p.id})">🗑</button></div></div>`;
+  }).join(''):'<div class="txt-sm">Nenhum registro ainda.</div>';
 }
 
-// ══════════ PHOTOS ══════════
-let photoTarget=null;
+// ── PHOTOS ──
+let photoSlot=null;
 function renderPhotos(){
-  const slots=['Início (frente)','Início (lateral)','Atual (frente)','Atual (lateral)'];
-  if(!state.photos)state.photos=[];
+  if(!S().photos)S().photos=[];
+  const slots=['Início · frente','Início · lateral','Atual · frente','Atual · lateral'];
   document.getElementById('photo-grid').innerHTML=slots.map((lbl,i)=>{
-    const src=state.photos[i];
+    const src=S().photos[i];
     return`<div class="photo-slot" onclick="clickPhoto(${i})">
-      ${src?`<img src="${src}" alt="${lbl}"><div class="overlay-rm">🗑️</div>`:`<span style="font-size:26px">📷</span><div class="photo-lbl">${lbl}</div>`}
+      ${src?`<img src="${src}" alt="${lbl}"><button class="photo-rm" onclick="rmPhoto(event,${i})">✕</button>`:`<span style="font-size:28px">📷</span><div class="photo-lbl">${lbl}</div>`}
     </div>`;
   }).join('');
-  if(state.fotoNota)document.getElementById('foto-nota').value=state.fotoNota;
+  if(S().fotoNota)document.getElementById('foto-nota').value=S().fotoNota;
 }
-
-function clickPhoto(i){
-  const src=state.photos&&state.photos[i];
-  if(src){if(confirm('Remover esta foto?')){state.photos[i]=null;saveState();renderPhotos()}}
-  else{photoTarget=i;document.getElementById('photo-input').click()}
-}
-
-function addPhoto(inp){
+window.clickPhoto=function(i){
+  if(S().photos&&S().photos[i])return;
+  photoSlot=i;document.getElementById('ph-input').click();
+};
+window.rmPhoto=function(e,i){
+  e.stopPropagation();
+  if(!confirm('Remover esta foto?'))return;
+  S().photos[i]=null;save();renderPhotos();
+};
+window.photoSelected=function(inp){
   const f=inp.files[0];if(!f)return;
   const rd=new FileReader();
   rd.onload=e=>{
-    if(!state.photos)state.photos=[];
-    state.photos[photoTarget]=e.target.result;
-    saveState();renderPhotos();toast('Foto salva ✓');
+    if(!S().photos)S().photos=[];
+    S().photos[photoSlot]=e.target.result;
+    save();renderPhotos();toast('Foto salva ✓');
   };
   rd.readAsDataURL(f);inp.value='';
-}
+};
+window.saveFotoNota=function(){S().fotoNota=document.getElementById('foto-nota').value;save();toast('Nota salva ✓')};
 
-function saveFotoNota(){
-  state.fotoNota=document.getElementById('foto-nota').value;
-  saveState();toast('Nota salva ✓');
-}
-
-// ══════════ ÂNCORA ══════════
-function saveAncora(){
-  state.ancora={a1:document.getElementById('anc-1').value,a2:document.getElementById('anc-2').value,a3:document.getElementById('anc-3').value};
-  saveState();renderAncora();toast('Âncora salva ✓');
-}
+// ── ÂNCORA ──
+window.saveAncora=function(){
+  S().ancora={a1:document.getElementById('anc-1').value,a2:document.getElementById('anc-2').value,a3:document.getElementById('anc-3').value};
+  save();renderAncora();toast('Âncora salva ✓');
+};
 function renderAncora(){
-  const a=state.ancora||{};
+  const a=S().ancora||{};
   if(a.a1||a.a2||a.a3){
-    document.getElementById('anc-display').style.display='block';
-    document.getElementById('anc-text').innerHTML=[
-      a.a1&&`<strong>Em Uberlândia:</strong> ${a.a1}`,
-      a.a2&&`<strong>Vou provar:</strong> ${a.a2}`,
-      a.a3&&`<strong>Quando quiser furar:</strong> ${a.a3}`,
-    ].filter(Boolean).join('<br><br>');
+    document.getElementById('anc-disp').style.display='block';
+    document.getElementById('anc-txt').innerHTML=[a.a1&&`<strong>Em Uberlândia:</strong> ${a.a1}`,a.a2&&`<strong>Vou provar:</strong> ${a.a2}`,a.a3&&`<strong>Quando quiser furar:</strong> ${a.a3}`].filter(Boolean).join('<br><br>');
     if(a.a1)document.getElementById('anc-1').value=a.a1;
     if(a.a2)document.getElementById('anc-2').value=a.a2;
     if(a.a3)document.getElementById('anc-3').value=a.a3;
   }
 }
 
-// ══════════ TOAST ══════════
-function toast(msg){
-  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2200);
+// ── NAVIGATION ──
+window.gotoPage=function(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');btn.classList.add('active');
+  if(id==='dieta')renderDieta();
+  if(id==='shape')renderShape();
+};
+
+window.openUserModal=function(){document.getElementById('mod-user').classList.add('open')};
+window.closeUserModal=function(){document.getElementById('mod-user').classList.remove('open')};
+
+// ── TOAST ──
+window.toast=function(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)};
+
+// ── INIT ──
+function refreshAllViews(){
+  renderCI();renderMetrics();renderTreinoList();
 }
 
-// ══════════ INIT ══════════
-async function initApp(){
-  setTrDate();renderCI();renderMetrics();renderTreinoList();
+function initApp(){
+  const ds=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  const ms=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const n=new Date();
+  document.getElementById('date-lbl').textContent=`${ds[n.getDay()]}, ${n.getDate()} ${ms[n.getMonth()]}`;
+  document.getElementById('i-data').value=n.toISOString().slice(0,10);
+  renderCI();renderMetrics();renderTreinoList();
 }
-
-async function boot(){
-  // try auto-login
-  try{
-    const ok=await autoLogin();
-    if(ok){launchApp();return}
-  }catch(e){}
-  // stay on login
-}
-
-document.getElementById('inp-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
-boot();
 </script>
 </body>
 </html>

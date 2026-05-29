@@ -189,6 +189,34 @@ body{display:flex;flex-direction:column}
 .wchart{height:110px;margin:8px 0}
 .wchart svg{width:100%;height:100%}
 
+/* PANORAMA */
+.pano-tabs{display:flex;gap:4px;margin-bottom:12px}
+.ptab{flex:1;text-align:center;padding:7px 4px;border-radius:7px;font-size:11px;font-weight:700;font-family:var(--fh);cursor:pointer;border:0.5px solid var(--border);color:var(--text3);background:none;letter-spacing:.3px}
+.ptab.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.pano-summary{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.6;background:var(--bg3);border-radius:8px;padding:10px 12px}
+.pano-header{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--text3);font-family:var(--fh);letter-spacing:.5px;margin-bottom:4px;padding:0 2px;text-transform:uppercase}
+.pano-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:0.5px solid var(--border)}
+.pano-row:last-child{border-bottom:none}
+.pano-day{font-size:12px;min-width:46px;line-height:1.3}
+.pano-acts{min-width:58px;font-size:15px;letter-spacing:-1px}
+.pano-diet-bar{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.pano-diet-fill{height:100%;border-radius:3px;transition:width .3s}
+.pano-diet-pct{font-size:11px;font-family:var(--fh);min-width:30px;text-align:right}
+.pano-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px}
+.pano-cell{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:var(--fh);font-weight:700}
+.pano-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--text2);margin-bottom:8px}
+.pano-dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:3px;vertical-align:middle}
+.pano-stat{padding:4px 0}
+.pano-stat-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:0.5px solid var(--border);font-size:14px}
+.pano-stat-row:last-child{border-bottom:none}
+.pano-year-row{margin-bottom:12px}
+.pano-year-lbl{font-size:12px;color:var(--text2);margin-bottom:5px;font-family:var(--fh);font-weight:700}
+.pano-year-bars{display:flex;flex-direction:column;gap:4px}
+.pano-ybar-wrap{display:flex;align-items:center;gap:8px;height:13px}
+.pano-ybar{height:100%;border-radius:3px;min-width:2px;transition:width .4s}
+.pano-ybar-wrap span{font-size:11px;color:var(--text3);min-width:28px}
+.carga-dt{font-size:10px;color:var(--text3);margin-left:2px}
+
 /* ANCORA */
 .anchor-disp{border-left:2px solid var(--accent);padding-left:14px;font-size:14px;line-height:1.8;font-style:italic;color:var(--text)}
 
@@ -268,7 +296,13 @@ body{display:flex;flex-direction:column}
         </div>
         <button class="chk-btn" id="btn-j" onclick="toggleCI('j')">✓</button>
       </div>
-      <!-- Cardio removido conforme solicitado — contador mantido acima -->
+      <div class="ci-row">
+        <div class="ci-left">
+          <div class="ci-emoji">🏃</div>
+          <div><div class="ci-name">Cardio</div><div class="ci-st" id="st-c">Pendente</div></div>
+        </div>
+        <button class="chk-btn" id="btn-c" onclick="toggleCI('c')">✓</button>
+      </div>
     </div>
 
     <!-- Streak -->
@@ -387,11 +421,21 @@ body{display:flex;flex-direction:column}
     <!-- HISTÓRICO -->
     <div id="st-hist" style="display:none">
       <div class="card">
+        <div class="ctitle">Panorama de atividade</div>
+        <div class="pano-tabs">
+          <button class="ptab active" data-p="dia"    onclick="setPanorama('dia')">Dia</button>
+          <button class="ptab"        data-p="semana" onclick="setPanorama('semana')">Semana</button>
+          <button class="ptab"        data-p="mes"    onclick="setPanorama('mes')">Mês</button>
+          <button class="ptab"        data-p="ano"    onclick="setPanorama('ano')">Ano</button>
+        </div>
+        <div id="panorama-body"></div>
+      </div>
+      <div class="card">
         <div class="ctitle">Evolução de peso</div>
         <div class="wchart"><svg id="w-svg"></svg></div>
       </div>
       <div class="card">
-        <div class="ctitle">Todos os registros</div>
+        <div class="ctitle">Registros de peso</div>
         <div id="hist-list"><div class="txt-sm">Nenhum registro ainda.</div></div>
       </div>
     </div>
@@ -707,8 +751,7 @@ window.toggleCI = function(t){
 
 function renderCI(){
   const k = todayK(); const d = S().checkins[k] || {};
-  // Apenas m e j (cardio removido do check-in, mantido no contador)
-  [{id:'m'},{id:'j'}].forEach(({id}) => {
+  [{id:'m'},{id:'j'},{id:'c'}].forEach(({id}) => {
     const btn = document.getElementById('btn-'+id);
     const st  = document.getElementById('st-'+id);
     if(!btn || !st) return;
@@ -767,9 +810,12 @@ window.openTreino = function(i){
   if(!S().exDone[k]) S().exDone[k] = {};
   document.getElementById('mod-head').textContent = t.tag + ' — ' + t.nome;
   document.getElementById('mod-exs').innerHTML = t.exs.map((ex,j) => {
-    const ek    = i+'_'+j;
-    const done  = S().exDone[k][ek] ? 'done' : '';
-    const carga = S().cargas[ek] || '';
+    const ek      = i+'_'+j;
+    const done    = S().exDone[k][ek] ? 'done' : '';
+    const cargaRaw = S().cargas[ek];
+    const carga   = cargaRaw ? (typeof cargaRaw === 'object' ? cargaRaw.kg : cargaRaw) : '';
+    const cargaDt = cargaRaw && typeof cargaRaw === 'object' ? cargaRaw.dt : null;
+    const dtLabel = cargaDt ? `<span class="carga-dt">· salvo ${cargaDt}</span>` : '';
     return `<div class="ex-item">
       <button class="ex-chk ${done}" id="ec${i}-${j}" onclick="toggleEx(${i},${j})">✓</button>
       <div class="ex-inf">
@@ -778,7 +824,7 @@ window.openTreino = function(i){
         ${ex.nt ? `<div class="ex-nt">${ex.nt}</div>` : ''}
         <div class="ex-cg">
           <input type="number" step="0.5" value="${carga}" placeholder="—" onchange="saveCarga('${ek}',this.value)">
-          <label>kg usados</label>
+          <label>kg${dtLabel}</label>
         </div>
       </div>
     </div>`;
@@ -796,7 +842,9 @@ window.toggleEx = function(i, j){
 };
 
 window.saveCarga = function(ek, v){
-  S().cargas[ek] = parseFloat(v) || 0; save();
+  const kg = parseFloat(v) || 0;
+  S().cargas[ek] = { kg, dt: todayK() };
+  save();
 };
 window.closeTreinoMod = function(){
   document.getElementById('mod-treino').classList.remove('open');
@@ -924,7 +972,7 @@ window.sTab = function(btn, id){
     document.getElementById(t).style.display = 'none';
   });
   document.getElementById(id).style.display = 'block';
-  if(id === 'st-hist') renderHist();
+  if(id === 'st-hist') { renderHist(); renderPanorama(); }
   if(id === 'st-anc')  renderAncora();
   if(id === 'st-foto') renderPhotos();
 };
@@ -1095,6 +1143,119 @@ function renderAncora(){
       a.a3 && `<strong>Se não cumprir:</strong> ${a.a3}`,
       a.a4 && `<strong>Quando quiser furar:</strong> ${a.a4}`,
     ].filter(Boolean).join('<br><br>');
+  }
+}
+
+// ══════════ PANORAMA ══════════
+let panoramaPeriod = 'semana';
+
+window.setPanorama = function(p){
+  panoramaPeriod = p;
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.ptab[data-p="${p}"]`).classList.add('active');
+  renderPanorama();
+};
+
+function renderPanorama(){
+  const el = document.getElementById('panorama-body');
+  if(!el) return;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const getKey = d => d.toISOString().slice(0,10);
+  const hasTreino = k => {
+    const ci = S().checkins[k] || {};
+    return { m:!!ci.m, j:!!ci.j, c:!!ci.c, any:!!(ci.m||ci.j||ci.c) };
+  };
+  const dietPct = k => {
+    const dd = S().dieta[k] || {};
+    return Math.round(REFS.filter((_,i) => dd[i]==='ok').length / REFS.length * 100);
+  };
+
+  if(panoramaPeriod === 'dia'){
+    const k  = getKey(today);
+    const ci = hasTreino(k);
+    const dp = dietPct(k);
+    el.innerHTML = `<div class="pano-stat">
+      <div class="pano-stat-row"><span>🏋️ Musculação</span><span style="color:${ci.m?'var(--accent)':'var(--text3)'}">${ci.m?'✓ Feito':'—'}</span></div>
+      <div class="pano-stat-row"><span>🥋 Jiu-Jitsu</span><span style="color:${ci.j?'var(--accent)':'var(--text3)'}">${ci.j?'✓ Feito':'—'}</span></div>
+      <div class="pano-stat-row"><span>🏃 Cardio</span><span style="color:${ci.c?'var(--accent)':'var(--text3)'}">${ci.c?'✓ Feito':'—'}</span></div>
+      <div class="pano-stat-row"><span>🥗 Dieta</span><span style="color:${dp>=80?'var(--green)':dp>=50?'var(--orange)':dp>0?'var(--red)':'var(--text3)'}">${dp?dp+'%':'—'}</span></div>
+    </div>`;
+
+  } else if(panoramaPeriod === 'semana'){
+    const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    let rows='', totalT=0, totalD=0;
+    for(let i=6;i>=0;i--){
+      const d  = new Date(today); d.setDate(today.getDate()-i);
+      const k  = getKey(d);
+      const ci = hasTreino(k);
+      const dp = dietPct(k);
+      if(ci.any) totalT++;
+      if(dp>=80) totalD++;
+      const icons = (ci.m?'🏋️':'')+(ci.j?'🥋':'')+(ci.c?'🏃':'');
+      const lbl   = i===0?'Hoje':days[d.getDay()];
+      rows += `<div class="pano-row">
+        <div class="pano-day">${lbl}<br><span class="txt-xs">${d.getDate()}/${d.getMonth()+1}</span></div>
+        <div class="pano-acts">${icons||'<span style="color:var(--text3);font-size:11px">—</span>'}</div>
+        <div class="pano-diet-bar"><div class="pano-diet-fill" style="width:${dp}%;background:${dp>=80?'var(--accent)':dp>=50?'var(--orange)':'var(--red)'}"></div></div>
+        <div class="pano-diet-pct" style="color:${dp>=80?'var(--accent)':dp>0?'var(--orange)':'var(--text3)'}">${dp?dp+'%':'—'}</div>
+      </div>`;
+    }
+    el.innerHTML = `<div class="pano-summary">🏋️ <strong>${totalT}/7</strong> dias com treino &nbsp;·&nbsp; 🥗 <strong>${totalD}/7</strong> dias com dieta ≥80%</div>
+      <div class="pano-header"><span style="min-width:46px">Dia</span><span style="min-width:58px">Ativ.</span><span style="flex:1">Dieta</span><span>%</span></div>
+      ${rows}`;
+
+  } else if(panoramaPeriod === 'mes'){
+    let cells='', totalT=0, totalD=0;
+    for(let i=29;i>=0;i--){
+      const d  = new Date(today); d.setDate(today.getDate()-i);
+      const k  = getKey(d);
+      const ci = hasTreino(k);
+      const dp = dietPct(k);
+      if(ci.any) totalT++;
+      if(dp>=80) totalD++;
+      const bg    = ci.any && dp>=80 ? 'var(--accent)' :
+                    ci.any           ? '#4a7c00' :
+                    dp>=80           ? 'rgba(200,245,66,0.3)' :
+                    dp>0             ? 'var(--bg4)' : 'var(--bg3)';
+      const color = (ci.any && dp>=80) ? '#000' : 'var(--text2)';
+      cells += `<div class="pano-cell" style="background:${bg};color:${color}">${d.getDate()}</div>`;
+    }
+    el.innerHTML = `<div class="pano-summary">Últimos 30 dias &nbsp;·&nbsp; 🏋️ <strong>${totalT}</strong> treinos &nbsp;·&nbsp; 🥗 <strong>${totalD}</strong> dias dieta ≥80%</div>
+      <div class="pano-legend">
+        <span><span class="pano-dot" style="background:var(--accent)"></span>Treino+Dieta</span>
+        <span><span class="pano-dot" style="background:#4a7c00"></span>Só treino</span>
+        <span><span class="pano-dot" style="background:rgba(200,245,66,0.3)"></span>Só dieta</span>
+      </div>
+      <div class="pano-cal">${cells}</div>`;
+
+  } else { // ano
+    const ms = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    let rows='', totalT=0, totalD=0;
+    for(let m=11;m>=0;m--){
+      const ref  = new Date(today.getFullYear(), today.getMonth()-m, 1);
+      const mIdx = ref.getMonth(); const yr = ref.getFullYear();
+      const dias = new Date(yr, mIdx+1, 0).getDate();
+      let mt=0, md=0, cap=0;
+      for(let d=1;d<=dias;d++){
+        const dt = new Date(yr, mIdx, d);
+        if(dt > today) continue;
+        cap++;
+        const k = getKey(dt);
+        if(hasTreino(k).any) mt++;
+        if(dietPct(k)>=80) md++;
+      }
+      totalT+=mt; totalD+=md;
+      const tPct = cap ? Math.round(mt/cap*100) : 0;
+      const dPct = cap ? Math.round(md/cap*100) : 0;
+      rows += `<div class="pano-year-row">
+        <div class="pano-year-lbl">${ms[mIdx]}/${String(yr).slice(2)} <span class="txt-xs" style="font-weight:400">${cap} dias registrados</span></div>
+        <div class="pano-year-bars">
+          <div class="pano-ybar-wrap"><div class="pano-ybar" style="width:${tPct}%;background:#4a7c00"></div><span>🏋️ ${mt}d (${tPct}%)</span></div>
+          <div class="pano-ybar-wrap"><div class="pano-ybar" style="width:${dPct}%;background:rgba(200,245,66,0.5)"></div><span>🥗 ${md}d (${dPct}%)</span></div>
+        </div>
+      </div>`;
+    }
+    el.innerHTML = `<div class="pano-summary">Total anual &nbsp;·&nbsp; 🏋️ <strong>${totalT}</strong> treinos &nbsp;·&nbsp; 🥗 <strong>${totalD}</strong> dias dieta ≥80%</div>${rows}`;
   }
 }
 

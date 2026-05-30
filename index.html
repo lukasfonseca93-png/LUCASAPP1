@@ -889,7 +889,7 @@ function renderPeriodizacao(){
 
 window.openPeriodoModal = function(){
   const inp = document.getElementById('ciclo-start-inp');
-  if(inp) inp.value = S().cicloStart || new Date().toISOString().slice(0,10);
+  if(inp) inp.value = S().cicloStart || todayK();
   document.getElementById('mod-periodo').classList.add('open');
 };
 window.closePeriodoModal = function(){
@@ -979,7 +979,10 @@ const REFS = [
 ];
 
 // ══════════ TREINO ══════════
-function todayK(){ return new Date().toISOString().slice(0,10); }
+function localKey(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function todayK(){ return localKey(new Date()); }
 
 window.toggleCI = function(t){
   const k = todayK();
@@ -1000,7 +1003,7 @@ function renderCI(){
   // Streak
   let streak = 0; const d2 = new Date(); d2.setHours(0,0,0,0);
   while(true){
-    const k2 = d2.toISOString().slice(0,10);
+    const k2 = localKey(d2);
     const ci = S().checkins[k2] || {};
     if(Object.values(ci).some(v=>v)){ streak++; d2.setDate(d2.getDate()-1); }
     else break;
@@ -1010,7 +1013,7 @@ function renderCI(){
   let wk = 0; const now = new Date(); now.setHours(0,0,0,0);
   for(let i=0;i<7;i++){
     const d3 = new Date(now); d3.setDate(now.getDate()-i);
-    const ck = S().checkins[d3.toISOString().slice(0,10)] || {};
+    const ck = S().checkins[localKey(d3)] || {};
     if(Object.values(ck).some(v=>v)) wk++;
   }
   document.getElementById('wk-cnt').textContent = wk + ' treinos';
@@ -1097,7 +1100,7 @@ window.dietNav = function(d){ dietOff += d; renderDieta(); };
 
 function dietK(){
   const d = new Date(); d.setDate(d.getDate() + dietOff);
-  return d.toISOString().slice(0,10);
+  return localKey(d);
 }
 function dietDate(){
   const d = new Date(); d.setDate(d.getDate() + dietOff); return d;
@@ -1136,7 +1139,7 @@ function renderDieta(){
   const wkp = [];
   for(let i=6;i>=0;i--){
     const dd2=new Date(); dd2.setDate(dd2.getDate()-i);
-    const k2 = dd2.toISOString().slice(0,10);
+    const k2 = localKey(dd2);
     const d2 = S().dieta[k2] || {};
     wkp.push(Math.round(REFS.filter((_,j) => d2[j]==='ok').length / REFS.length * 100));
   }
@@ -1399,7 +1402,7 @@ function renderPanorama(){
   const el = document.getElementById('panorama-body');
   if(!el) return;
   const today = new Date(); today.setHours(0,0,0,0);
-  const getKey = d => d.toISOString().slice(0,10);
+  const getKey = d => localKey(d);
   const hasTreino = k => {
     const ci = S().checkins[k] || {};
     return { m:!!ci.m, j:!!ci.j, c:!!ci.c, any:!!(ci.m||ci.j||ci.c) };
@@ -1531,7 +1534,7 @@ function initApp(){
   const n    = new Date();
   document.getElementById('date-lbl').textContent =
     `${days[n.getDay()]}, ${n.getDate()} ${mons[n.getMonth()]}`;
-  document.getElementById('i-data').value = n.toISOString().slice(0,10);
+  document.getElementById('i-data').value = localKey(n);
   renderCI(); renderMetrics(); renderTreinoList(); renderPeriodizacao();
 }
 </script>

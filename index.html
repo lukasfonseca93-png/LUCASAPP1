@@ -217,6 +217,31 @@ body{display:flex;flex-direction:column}
 .pano-ybar-wrap span{font-size:11px;color:var(--text3);min-width:28px}
 .carga-dt{font-size:10px;color:var(--text3);margin-left:2px}
 
+/* PERIODIZAÇÃO */
+.periodo-badge{display:inline-flex;align-items:center;gap:6px;border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700;font-family:var(--fh);letter-spacing:.5px;margin-bottom:10px}
+.periodo-title{font-family:var(--fh);font-size:20px;font-weight:800;line-height:1.1}
+.periodo-sub{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5}
+.periodo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.periodo-item{background:var(--bg3);border-radius:8px;padding:10px 12px}
+.periodo-item-lbl{font-size:10px;color:var(--text3);font-family:var(--fh);letter-spacing:1px;text-transform:uppercase}
+.periodo-item-val{font-family:var(--fh);font-size:16px;font-weight:700;margin-top:3px}
+.periodo-dicas{margin-top:10px}
+.periodo-dica{font-size:12px;color:var(--text2);padding:6px 0;border-bottom:0.5px solid var(--border);line-height:1.5}
+.periodo-dica:last-child{border-bottom:none}
+.periodo-dica::before{content:'›';color:var(--accent);font-weight:700;margin-right:6px}
+.ciclo-bar-wrap{margin:10px 0 4px}
+.ciclo-bar{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.ciclo-fill{height:100%;border-radius:4px;transition:width .5s}
+.ciclo-fases{display:flex;gap:0;margin-top:6px;border-radius:6px;overflow:hidden;height:4px}
+.fase-seg{height:100%;flex-shrink:0}
+.ciclo-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px}
+.periodo-next{margin-top:10px;background:var(--bg3);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text2)}
+.periodo-next strong{color:var(--text);display:block;margin-bottom:2px}
+.btn-ciclo{width:100%;background:none;border:0.5px solid var(--border2);color:var(--text2);font-family:var(--fb);font-size:13px;padding:11px;border-radius:var(--r2);cursor:pointer;margin-top:10px}
+.btn-ciclo:active{border-color:var(--accent);color:var(--accent)}
+.periodo-modal-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:0.5px solid var(--border)}
+.periodo-modal-row:last-child{border-bottom:none}
+
 /* ANCORA */
 .anchor-disp{border-left:2px solid var(--accent);padding-left:14px;font-size:14px;line-height:1.8;font-style:italic;color:var(--text)}
 
@@ -317,9 +342,15 @@ body{display:flex;flex-direction:column}
       </div>
     </div>
 
+    <!-- Periodização -->
+    <div class="card" id="card-periodo">
+      <div class="ctitle">Periodização — Ciclo Atual</div>
+      <div id="periodo-body"></div>
+    </div>
+
     <!-- Programa -->
     <div class="card">
-      <div class="ctitle">Programa — Hipertrofia</div>
+      <div class="ctitle" id="prog-title">Programa — Hipertrofia</div>
       <div id="treino-list"></div>
     </div>
   </div>
@@ -470,6 +501,32 @@ body{display:flex;flex-direction:column}
   </div>
 </div>
 
+<!-- MODAL PERIODIZAÇÃO -->
+<div class="overlay" id="mod-periodo" onclick="if(event.target===this)closePeriodoModal()">
+  <div class="modal" style="padding-bottom:28px">
+    <div class="modal-handle"></div>
+    <div class="modal-head">Configurar ciclo de treino</div>
+    <div style="padding:20px">
+      <div class="txt-sm" style="margin-bottom:14px;line-height:1.6">
+        Defina a data de início do seu ciclo atual de periodização. O app calculará automaticamente em qual fase e semana você está.
+      </div>
+      <div class="fg">
+        <label>Data de início do ciclo</label>
+        <input type="date" id="ciclo-start-inp">
+      </div>
+      <div style="margin:12px 0;padding:12px;background:var(--bg3);border-radius:8px">
+        <div class="txt-xs" style="margin-bottom:6px;color:var(--accent);font-weight:700">ESTRUTURA DO CICLO (12 SEMANAS)</div>
+        <div class="periodo-modal-row"><span class="txt-sm">🟢 Sem. 1–4</span><span class="txt-sm"><strong>Acumulação</strong> · 12–15 reps · RPE 6–7</span></div>
+        <div class="periodo-modal-row"><span class="txt-sm">🟡 Sem. 5–8</span><span class="txt-sm"><strong>Hipertrofia</strong> · 8–12 reps · RPE 7–8</span></div>
+        <div class="periodo-modal-row"><span class="txt-sm">🟠 Sem. 9–11</span><span class="txt-sm"><strong>Intensificação</strong> · 5–8 reps · RPE 8–9</span></div>
+        <div class="periodo-modal-row"><span class="txt-sm">⚪ Sem. 12</span><span class="txt-sm"><strong>Deload</strong> · Volume –40% · RPE 5–6</span></div>
+      </div>
+      <button class="btn-p" onclick="saveCicloStart()">Salvar início do ciclo ✓</button>
+      <button class="btn-s" onclick="closePeriodoModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL USER -->
 <div class="overlay" id="mod-user" onclick="if(event.target===this)closeUserModal()">
   <div class="modal" style="padding-bottom:28px">
@@ -520,8 +577,9 @@ function defaultState(){
     checkins:{}, cargas:{}, exDone:{},
     pesos:[], meta:{inicio:80, alvo:76},
     ancora:{}, dieta:{},
-    photos:['','','',''],   // 4 slots, empty string = sem foto
-    fotoNota:''
+    photos:['','','',''],
+    fotoNota:'',
+    cicloStart: ''   // data de início do ciclo de periodização
   };
 }
 
@@ -663,6 +721,187 @@ onAuthStateChanged(auth, async user => {
 // ══════════ STATE ACCESSOR ══════════
 function S(){ return state; }
 function save(){ scheduleSave(); }
+
+// ══════════ PERIODIZAÇÃO ══════════
+// Baseado em: Schoenfeld (2010, 2017), Israetel et al. (RP Hypertrophy), Helms et al. (2015)
+// Ciclo de 12 semanas: 3 mesociclos + 1 deload → repetir com cargas superiores
+const FASES = [
+  {
+    idx: 0, nome:'Acumulação', semanas: 4,
+    cor:'#4a8c00', corBg:'rgba(74,140,0,0.12)',
+    series:'4–5', reps:'12–15', rpe:'6–7', pausa:'60–75s',
+    desc:'Base de volume. Adaptação metabólica e do tecido conjuntivo. Seu corpo está aprendendo o movimento e preparando tendões e ligamentos para as fases pesadas.',
+    dicas:[
+      'Foco em execução perfeita — qualidade antes de carga',
+      'Progrida ~2,5 kg/semana quando completar todas as reps no limite superior',
+      'Ombro: mantenha cargas leves no supino, priorize amplitude reduzida',
+      'Proteína mínima 2g/kg · Sono 7–8h — o tecido conjuntivo se recupera durante o sono'
+    ],
+    inj_alert: 'Fase ideal para ombro — cargas baixas, alto volume, sem risco'
+  },
+  {
+    idx: 1, nome:'Hipertrofia', semanas: 4,
+    cor:'#c8f542', corBg:'rgba(200,245,66,0.10)',
+    series:'4–5', reps:'8–12', rpe:'7–8', pausa:'75–90s',
+    desc:'Fase principal de crescimento. Tensão mecânica máxima com volume elevado. A ciência mostra que 8–12 reps a RPE 7–8 maximiza o recrutamento de fibras e o sinal anabólico (mTOR).',
+    dicas:[
+      'Progressive overload: adicione 1 rep antes de aumentar a carga',
+      'Última série de cada exercício: drop set ou rest-pause (+2 reps após falha)',
+      'Ombro: supino reto a 70% da carga máxima, amplitude reduzida obrigatória',
+      'Creatina 5g/dia + carboidrato pré-treino — pico de performance desta fase'
+    ],
+    inj_alert: '⚠️ Monitore o ombro no supino — se dor ≥ 4/10, reduza 10% da carga'
+  },
+  {
+    idx: 2, nome:'Intensificação', semanas: 3,
+    cor:'#ff8c00', corBg:'rgba(255,140,0,0.10)',
+    series:'4–5', reps:'5–8', rpe:'8–9', pausa:'90–120s',
+    desc:'Alta intensidade, volume moderado. Recrutamento máximo de fibras tipo II. Ganha força que será a nova base da próxima fase de hipertrofia — o motor do crescimento a longo prazo.',
+    dicas:[
+      '2 séries de aclimatação (50% e 70%) antes de cada exercício principal',
+      'Última série até a falha técnica — anote carga e reps para bater na semana seguinte',
+      'Ombro: PULE o desenvolvimento Smith esta fase, foque em tríceps e peito modificado',
+      'Pausa é sagrada — cortar o descanso aqui reduz performance em 15–20%'
+    ],
+    inj_alert: '⚠️ Fase crítica para o ombro — zero exercício overhead com carga. Peito: máx 80% 1RM'
+  },
+  {
+    idx: 3, nome:'Deload', semanas: 1,
+    cor:'#888888', corBg:'rgba(136,136,136,0.10)',
+    series:'3', reps:'12–15', rpe:'5–6', pausa:'60s',
+    desc:'Recuperação ativa. O músculo cresce DURANTE o descanso, não durante o treino. O deload força a supercompensação — você sairá mais forte do que entrou. Não pule.',
+    dicas:[
+      'Mantenha as mesmas cargas da fase anterior — reduza apenas o volume em 40%',
+      'Sono, hidratação e alimentação são o "treino" desta semana',
+      'Ombro: aproveite para mobilidade — rotação interna/externa com elástico leve',
+      'Mentalmente difícil, fisiologicamente essencial — é aqui que os ganhos se consolidam'
+    ],
+    inj_alert: '✅ Semana ideal para fisioterapia e exercícios de reabilitação do manguito'
+  },
+];
+
+// Semanas totais do ciclo
+const CICLO_TOTAL_SEMANAS = FASES.reduce((a,f) => a + f.semanas, 0); // 12
+
+function getFaseAtual(){
+  const start = S().cicloStart;
+  if(!start) return { fase: null, semana: 0, diaNoSemana: 0, semanaTotal: 0, pct: 0 };
+  const startDate = new Date(start + 'T00:00:00');
+  const hoje      = new Date(); hoje.setHours(0,0,0,0);
+  const diasTotal = Math.floor((hoje - startDate) / 86400000);
+  if(diasTotal < 0) return { fase: null, semana: 0, diaNoSemana: 0, semanaTotal: 0, pct: 0 };
+  // Ciclo se repete
+  const diasNoCiclo = diasTotal % (CICLO_TOTAL_SEMANAS * 7);
+  const semanaTotal = Math.floor(diasNoCiclo / 7) + 1; // 1-indexed
+  const cicloNum    = Math.floor(diasTotal / (CICLO_TOTAL_SEMANAS * 7)) + 1;
+  // Detectar fase
+  let acc = 0;
+  let faseObj = FASES[0];
+  let semNaFase = 1;
+  for(const f of FASES){
+    if(semanaTotal <= acc + f.semanas){
+      faseObj  = f;
+      semNaFase = semanaTotal - acc;
+      break;
+    }
+    acc += f.semanas;
+  }
+  const pct = Math.round((semanaTotal - 1) / CICLO_TOTAL_SEMANAS * 100);
+  return { fase: faseObj, semana: semNaFase, semanaTotal, cicloNum, pct, diasTotal };
+}
+
+function renderPeriodizacao(){
+  const el = document.getElementById('periodo-body');
+  if(!el) return;
+  const { fase, semana, semanaTotal, cicloNum, pct } = getFaseAtual();
+
+  if(!fase || !S().cicloStart){
+    el.innerHTML = `
+      <div class="txt-sm" style="line-height:1.6;margin-bottom:12px">
+        Configure o início do seu ciclo de periodização para receber orientações personalizadas por semana — fases de acumulação, hipertrofia, intensificação e deload calculadas automaticamente.
+      </div>
+      <button class="btn-p" onclick="openPeriodoModal()">Configurar ciclo →</button>`;
+    return;
+  }
+
+  // Calcular quando começa a próxima fase
+  let semsParaProxima = 0;
+  for(const f of FASES){
+    if(f.idx === fase.idx){ semsParaProxima = f.semanas - semana + 1; break; }
+  }
+  const proxFase = FASES[(fase.idx + 1) % FASES.length];
+
+  // Segmentos de cor para barra de ciclo
+  const segs = FASES.map(f => `<div class="fase-seg" style="flex:${f.semanas};background:${f.cor};opacity:0.5"></div>`).join('');
+
+  el.innerHTML = `
+    <div class="periodo-badge" style="background:${fase.corBg};color:${fase.cor};border:0.5px solid ${fase.cor}40">
+      CICLO ${cicloNum} &nbsp;·&nbsp; ${fase.nome.toUpperCase()}
+    </div>
+    <div class="periodo-title" style="color:${fase.cor}">${fase.nome}</div>
+    <div class="periodo-sub">${fase.desc}</div>
+
+    <div class="ciclo-bar-wrap">
+      <div class="ciclo-bar"><div class="ciclo-fill" style="width:${pct}%;background:${fase.cor}"></div></div>
+      <div class="ciclo-fases">${segs}</div>
+      <div class="ciclo-lbl"><span>Semana ${semanaTotal}/${CICLO_TOTAL_SEMANAS}</span><span>${pct}% do ciclo</span></div>
+    </div>
+
+    <div class="periodo-grid">
+      <div class="periodo-item">
+        <div class="periodo-item-lbl">Semana</div>
+        <div class="periodo-item-val" style="color:${fase.cor}">${semana}/${fase.semanas}</div>
+      </div>
+      <div class="periodo-item">
+        <div class="periodo-item-lbl">Repetições</div>
+        <div class="periodo-item-val">${fase.reps}</div>
+      </div>
+      <div class="periodo-item">
+        <div class="periodo-item-lbl">Séries</div>
+        <div class="periodo-item-val">${fase.series}</div>
+      </div>
+      <div class="periodo-item">
+        <div class="periodo-item-lbl">RPE · Pausa</div>
+        <div class="periodo-item-val" style="font-size:13px">${fase.rpe} · ${fase.pausa}</div>
+      </div>
+    </div>
+
+    <div style="background:${fase.corBg};border:0.5px solid ${fase.cor}30;border-radius:8px;padding:10px 12px;font-size:12px;color:${fase.cor};margin-bottom:10px">
+      🩺 ${fase.inj_alert}
+    </div>
+
+    <div class="periodo-dicas">
+      ${fase.dicas.map(d => `<div class="periodo-dica">${d}</div>`).join('')}
+    </div>
+
+    <div class="periodo-next">
+      <strong>Próxima fase em ${semsParaProxima} semana${semsParaProxima!==1?'s':''}</strong>
+      ${proxFase.nome} · ${proxFase.reps} reps · RPE ${proxFase.rpe}
+    </div>
+
+    <button class="btn-ciclo" onclick="openPeriodoModal()">⚙️ Ajustar início do ciclo</button>
+  `;
+
+  // Atualizar título do programa
+  const pt = document.getElementById('prog-title');
+  if(pt) pt.textContent = `Programa — ${fase.nome} · ${fase.reps} reps`;
+}
+
+window.openPeriodoModal = function(){
+  const inp = document.getElementById('ciclo-start-inp');
+  if(inp) inp.value = S().cicloStart || new Date().toISOString().slice(0,10);
+  document.getElementById('mod-periodo').classList.add('open');
+};
+window.closePeriodoModal = function(){
+  document.getElementById('mod-periodo').classList.remove('open');
+};
+window.saveCicloStart = function(){
+  const v = document.getElementById('ciclo-start-inp').value;
+  if(!v){ toast('Selecione uma data'); return; }
+  S().cicloStart = v;
+  save(); closePeriodoModal(); renderPeriodizacao();
+  toast('Ciclo configurado ✓');
+};
 
 // ══════════ DADOS DE TREINO ══════════
 const TREINOS = [
@@ -1282,7 +1521,7 @@ window.toast = function(msg){
 
 // ══════════ REFRESH GERAL ══════════
 function refreshAllViews(){
-  renderCI(); renderMetrics(); renderTreinoList();
+  renderCI(); renderMetrics(); renderTreinoList(); renderPeriodizacao();
 }
 
 // ══════════ INICIALIZAÇÃO ══════════
@@ -1293,7 +1532,7 @@ function initApp(){
   document.getElementById('date-lbl').textContent =
     `${days[n.getDay()]}, ${n.getDate()} ${mons[n.getMonth()]}`;
   document.getElementById('i-data').value = n.toISOString().slice(0,10);
-  renderCI(); renderMetrics(); renderTreinoList();
+  renderCI(); renderMetrics(); renderTreinoList(); renderPeriodizacao();
 }
 </script>
 </body>
